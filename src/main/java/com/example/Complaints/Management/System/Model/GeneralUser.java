@@ -1,13 +1,15 @@
 package com.example.Complaints.Management.System.Model;
 
+import com.example.Complaints.Management.System.Repository.GeneralUserRepo;
 import com.example.Complaints.Management.System.Utils.Role;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "role")
+@DiscriminatorColumn(name = "role",discriminatorType = DiscriminatorType.STRING)
 @Table(name = "general_user")
 public class GeneralUser {
 
@@ -17,34 +19,36 @@ public class GeneralUser {
     private Long userId;
 
     @Column(name = "user_name")
-    private String userName;
+    private String userName = "user";
 
     @Column(name = "password")
-    private String password;
+    private String password = "123456";
 
     @Column(name = "email")
-    private String email;
+    private String email = "user@gmail.com";
 
     @Column(name = "age")
-    private int age;
+    private int age = 24;
 
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
     @Column(name = "role",insertable=false, updatable=false)
-    private Role role;
+    private String role;
 
     @ElementCollection
     @CollectionTable(name = "user_phones", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "phone")
-    private List<String> phoneNumbers;
+    private List<String> phoneNumbers = new ArrayList<>();
 
 
-    public GeneralUser(Long userId, String userName, String password, String email, int age, Role role) {
+    public GeneralUser(String userName){
+        this.userName = userName;
+    }
+    public GeneralUser(Long userId, String userName, String password, String email, int age) {
         this.userId = userId;
         this.userName = userName;
         this.password = password;
         this.email = email;
         this.age = age;
-        this.role = role;
     }
 
     public GeneralUser() {
@@ -90,11 +94,19 @@ public class GeneralUser {
         this.age = age;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<String> getPhoneNumbers() {
+        return phoneNumbers;
+    }
+
+    public void setPhoneNumbers(List<String> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
     }
 }

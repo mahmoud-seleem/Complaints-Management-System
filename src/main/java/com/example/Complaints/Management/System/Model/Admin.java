@@ -16,13 +16,17 @@ public class Admin extends GeneralUser{
     @OneToMany(mappedBy = "admin",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ComplaintStatus> complaintStatuses = new ArrayList<>();
 
-    public Admin(Long userId, String userName, String password, String email, int age, Role role, List<Complaint> complaints) {
-        super(userId, userName, password, email, age, role);
+    public Admin(Long userId, String userName, String password, String email, int age, String role, List<Complaint> complaints) {
+        super(userId, userName, password, email, age);
         this.complaints = complaints;
     }
 
     public Admin(List<Complaint> complaints) {
         this.complaints = complaints;
+    }
+
+    public Admin(String userName){
+        super(userName);
     }
 
     public Admin(){

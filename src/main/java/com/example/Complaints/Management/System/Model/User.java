@@ -13,8 +13,8 @@ public class User extends GeneralUser {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Complaint> complaints = new ArrayList<>();
 
-    public User(Long userId, String userName, String password, String email, int age, Role role, List<Complaint> complaints) {
-        super(userId, userName, password, email, age, role);
+    public User(Long userId, String userName, String password, String email, int age, List<Complaint> complaints) {
+        super(userId, userName, password, email, age);
         this.complaints = complaints;
     }
 

@@ -14,24 +14,22 @@ public class Complaint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "complaint_id")
     private Long compId;
-    private String title;
-    private String description;
+    private String title = "Demo";
+    private String description = "Demo-description";
     @Column(name = "attachment_url")
-    private String attachmentUrl;
+    private String attachmentUrl = null;
 
     @Column(name = "creation_date")
-    private Date creationDate;
+    private Date creationDate = new Date();
 
-    private String category;
+    private String category = "normal";
 
     @Column(name = "current_status")
-    private String currentStatus;
-
+    private String currentStatus = null;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
@@ -40,7 +38,7 @@ public class Complaint {
     @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL)
     private List<ComplaintStatus> complaintStatuses = new ArrayList<>();
 
-    public Complaint(Long compId, String title, String description, String attachmentUrl, Date creationDate, String category, String currentStatus) {
+    public Complaint(Long compId, String title, String description, String attachmentUrl, Date creationDate, String category, String currentStatus, User user, Admin admin, List<ComplaintStatus> complaintStatuses) {
         this.compId = compId;
         this.title = title;
         this.description = description;
@@ -48,6 +46,9 @@ public class Complaint {
         this.creationDate = creationDate;
         this.category = category;
         this.currentStatus = currentStatus;
+        this.user = user;
+        this.admin = admin;
+        this.complaintStatuses = complaintStatuses;
     }
 
     public Complaint() {
