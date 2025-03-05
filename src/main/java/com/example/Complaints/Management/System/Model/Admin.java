@@ -1,10 +1,7 @@
 package com.example.Complaints.Management.System.Model;
 
 import com.example.Complaints.Management.System.Utils.Role;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +10,10 @@ import java.util.List;
 @DiscriminatorValue("ADMIN")
 public class Admin extends GeneralUser{
 
-    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "admin",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Complaint> complaints = new ArrayList<>();
 
-    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "admin",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ComplaintStatus> complaintStatuses = new ArrayList<>();
 
     public Admin(Long userId, String userName, String password, String email, int age, Role role, List<Complaint> complaints) {

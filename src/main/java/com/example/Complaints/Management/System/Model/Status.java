@@ -17,7 +17,7 @@ public class Status {
     @Column(name = "status_type")
     private String statusType;
 
-    @OneToMany(mappedBy = "status", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "status",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ComplaintStatus> complaintStatuses = new ArrayList<>();
 
     public Long getStatusId() {
