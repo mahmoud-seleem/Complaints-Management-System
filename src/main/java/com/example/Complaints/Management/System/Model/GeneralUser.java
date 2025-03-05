@@ -3,8 +3,11 @@ package com.example.Complaints.Management.System.Model;
 import com.example.Complaints.Management.System.Utils.Role;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role")
 @Table(name = "general_user")
 public class GeneralUser {
 
@@ -26,8 +29,13 @@ public class GeneralUser {
     private int age;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
+    @Column(name = "role",insertable=false, updatable=false)
     private Role role;
+
+    @ElementCollection
+    @CollectionTable(name = "user_phones", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "phone")
+    private List<String> phoneNumbers;
 
 
     public GeneralUser(Long userId, String userName, String password, String email, int age, Role role) {
