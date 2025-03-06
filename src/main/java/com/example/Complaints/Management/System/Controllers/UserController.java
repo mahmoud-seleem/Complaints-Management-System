@@ -18,28 +18,18 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private AdminRepo adminRepo;
-    @Autowired
     private UserService userService;
 
-    @Autowired
-    private ComplaintRepo complaintRepo;
-
-    @Autowired
-    private StatusRepo statusRepo;
-
     @PostMapping("/sign-up")
-    public User registerUser(@Valid @RequestBody UserDto userDto){
+    public UserDto registerUser(@Valid @RequestBody UserDto userDto){
         return userService.registerUser(userDto);
-
+    }
+    @PutMapping("/update")
+    public UserDto updateUser(@Valid @RequestBody UserDto userDto) throws Exception{
+        return userService.updateUser(userDto);
     }
     @GetMapping("/{id}")
-    public User getUser(@PathVariable("id")Long id){
+    public User getUserById(@PathVariable("id") Long id){
         return userService.getUser(id);
     }
-    @PostMapping("/admin/sign-up")
-    public void registerAdmin(){
-        adminRepo.save(new Admin("mahmoud"));
-    }
-
 }

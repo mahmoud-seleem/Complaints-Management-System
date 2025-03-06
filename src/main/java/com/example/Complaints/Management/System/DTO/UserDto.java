@@ -1,18 +1,19 @@
 package com.example.Complaints.Management.System.DTO;
 
 
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
-
+@JsonInclude(JsonInclude.Include.NON_NULL)  // Excludes null values
 public class UserDto {
-    @NotNull
-    private String userName;
-    @NotNull
-    private String Password;
-    @NotNull
-    private String Email;
 
+    private Long userId = null;
+
+    private String userName;
+
+    private String Password;
+
+    private String email;
 
     private int age;
 
@@ -24,7 +25,7 @@ public class UserDto {
     public UserDto(String userName, String password, String email, List<String> phoneNumbers) {
         this.userName = userName;
         Password = password;
-        Email = email;
+        this.email = email;
         this.phoneNumbers = phoneNumbers;
     }
 
@@ -45,11 +46,11 @@ public class UserDto {
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public List<String> getPhoneNumbers() {
@@ -58,5 +59,21 @@ public class UserDto {
 
     public void setPhoneNumbers(List<String> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

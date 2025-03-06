@@ -3,6 +3,7 @@ package com.example.Complaints.Management.System.Model;
 import com.example.Complaints.Management.System.Repository.GeneralUserRepo;
 import com.example.Complaints.Management.System.Utils.Role;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Formula;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,8 @@ public class GeneralUser {
     private int age = 24;
 
 //    @Enumerated(EnumType.STRING)
-    @Column(name = "role",insertable=false, updatable=false)
+    //@Column(name = "role",insertable=false, updatable=false)
+    @Formula("role")
     private String role;
 
     @ElementCollection
