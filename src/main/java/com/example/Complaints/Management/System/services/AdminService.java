@@ -1,8 +1,8 @@
 package com.example.Complaints.Management.System.services;
 
-import com.example.Complaints.Management.System.DTO.UserDto;
-import com.example.Complaints.Management.System.Model.User;
-import com.example.Complaints.Management.System.Repository.UserRepo;
+import com.example.Complaints.Management.System.DTO.AdminDto;
+import com.example.Complaints.Management.System.Model.Admin;
+import com.example.Complaints.Management.System.Repository.AdminRepo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -18,95 +18,89 @@ import java.util.NoSuchElementException;
 
 @Service
 @Transactional
-public class UserService {
+public class AdminService {
 
-    public UserService() {
+    public AdminService() {
     }
-
-    public UserService(UserRepo userRepo) {
-        this.userRepo = userRepo;
-    }
-
 
     @Autowired
-    private UserRepo userRepo;
+    private AdminRepo adminRepo;
 
     @PersistenceContext
     private EntityManager entityManager;
 
 
     @Transactional
-    public UserDto registerUser(UserDto userDto){
+    public AdminDto registerAdmin(AdminDto adminDto){
         // validation logic on the DTO object to be implemented here
-        User registeredUser = userRepo.save(populateUser(userDto));
-        entityManager.refresh(registeredUser);
-        userDto.setUserId(registeredUser.getUserId());
-        return userDto;
+        Admin registeredAdmin = adminRepo.save(populateAdmin(adminDto));
+        entityManager.refresh(registeredAdmin);
+        adminDto.setUserId(registeredAdmin.getUserId());
+        return adminDto;
     }
-    private User populateUser(UserDto userDto){
-        User user = new User();
-        user.setUserName(userDto.getUserName());
-        user.setPassword(userDto.getPassword());
-        user.setEmail(userDto.getEmail());
-        user.setAge(userDto.getAge());
-        List<String> phones = user.getPhoneNumbers();
-        if (userDto.getPhoneNumbers() != null){
-            for (String phone : userDto.getPhoneNumbers()){
+    private Admin populateAdmin(AdminDto adminDto){
+        Admin admin = new Admin();
+        admin.setUserName(adminDto.getUserName());
+        admin.setPassword(adminDto.getPassword());
+        admin.setEmail(adminDto.getEmail());
+        admin.setAge(adminDto.getAge());
+        List<String> phones = admin.getPhoneNumbers();
+        if (adminDto.getPhoneNumbers() != null){
+            for (String phone :adminDto.getPhoneNumbers()){
                 phones.add(phone);
             }
         }
-        return user;
+        return admin;
     }
 
     @Transactional
-    public UserDto updateUser(UserDto userDto) throws Exception {
+    public AdminDto updateAdmin(AdminDto adminDto) throws Exception {
         // validation to all existed and required fields
-        User user;
+        Admin admin ;
         try{
-            user =  userRepo.findById(userDto.getUserId()).get();
+            admin =  adminRepo.findById(adminDto.getUserId()).get();
         }catch (Exception e){
             throw new ValidationException("User not exist");
         }
-        user = updateUserData(user,userDto);
-//        System.out.println(user.getUserName());
-        User updatedUser = userRepo.saveAndFlush(user);
-        return populateUserDto(updatedUser,userDto);
+        admin  = updateAdminData(admin ,adminDto);
+        Admin updatedAdmin = adminRepo.saveAndFlush(admin );
+        return populateAdminDto(updatedAdmin,adminDto);
     }
-    private User updateUserData(User user,UserDto userDto) throws Exception {
-        Class<?> dtoClass = userDto.getClass();
-        Class<?> entityClass = user.getClass();
+    private Admin updateAdminData(Admin admin , AdminDto adminDto) throws Exception {
+        Class<?> dtoClass = adminDto.getClass();
+        Class<?> entityClass = admin .getClass();
 
         for (Field dtoField : dtoClass.getDeclaredFields()) {
             dtoField.setAccessible(true);
-            Object value = dtoField.get(userDto); // Get DTO field value
+            Object value = dtoField.get(adminDto); // Get DTO field value
 
             if (value != null) { // Only map non-null values
                 Field entityField = getField(entityClass, dtoField.getName());
-                if (     entityField != null &&
+                if (entityField != null &&
                         !entityField.getName().equals("userId") &&
                         !entityField.getName().equals("phoneNumbers")){
-                        entityField.setAccessible(true);
-                        entityField.set(user, value); // Set value in entity
+                    entityField.setAccessible(true);
+                    entityField.set(admin , value); // Set value in entity
                 }
             }
         }
-        return user;
+        return admin ;
     }
-    private UserDto populateUserDto(User user, UserDto userDto) throws IllegalAccessException {
-        System.out.println(user);
-        for (Field entityField : getAllFields(user.getClass())) {
+    private AdminDto populateAdminDto(Admin admin , AdminDto adminDto) throws IllegalAccessException {
+        System.out.println(admin );
+        for (Field entityField : getAllFields(admin .getClass())) {
             System.out.println(entityField.getName());
             entityField.setAccessible(true);
-            Object value = entityField.get(user);
+            Object value = entityField.get(admin );
             if (value != null) { // Only map non-null values
-                Field dtoField = getField(userDto.getClass(), entityField.getName());
+                Field dtoField = getField(adminDto.getClass(), entityField.getName());
                 if (dtoField != null) {
                     dtoField.setAccessible(true);
-                    dtoField.set(userDto, value);
+                    dtoField.set(adminDto, value);
                 }
             }
         }
-        return userDto;
+        return adminDto;
     }
 
     private static Field getField(Class<?> clazz, String fieldName) {
@@ -129,30 +123,30 @@ public class UserService {
         return fields;
     }
 
-    public UserDto getAdminById(Long id) {
+    public AdminDto getAdminById(Long id) {
         try {
-            UserDto response = new UserDto();
-            return populateUserDto(userRepo.findById(id).get(),response);
+            AdminDto response = new AdminDto();
+            return populateAdminDto(adminRepo.findById(id).get(),response);
         }catch (NoSuchElementException e){
             throw new ValidationException("User Doesn't Exist !!");
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
-    public UserDto deleteUser(Long id){
-        UserDto userDto = new UserDto();
-        User user ;
+    public AdminDto deleteAdmin(Long id){
+        AdminDto adminDto = new AdminDto();
+        Admin admin  ;
         try {
-            user = userRepo.findById(id).get();
-            userDto = populateUserDto(user,userDto);
-            userRepo.delete(user);
+            admin  = adminRepo.findById(id).get();
+            adminDto = populateAdminDto(admin ,adminDto);
+            adminRepo.delete(admin );
 //            entityManager.flush();
         } catch (NoSuchElementException e){
             throw new ValidationException("User Doesn't Exist !!");
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        return userDto;
+        return adminDto;
     }
 //    public List<UserDto>
     }

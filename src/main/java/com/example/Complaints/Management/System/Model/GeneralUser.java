@@ -111,4 +111,12 @@ public class GeneralUser {
     public void setPhoneNumbers(List<String> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
     }
+    public String toString(){
+        return "userId = " + getUserId() +"\n"
+        +"userName = " + getUserName() +"\n"
+        +"email = " + getEmail() +"\n"
+        +"password = " + getPassword() +"\n"
+        +"age = " + getAge() +"\n"
+        +"phones = " + getPhoneNumbers().toString() +"\n" ;
+    }
 }

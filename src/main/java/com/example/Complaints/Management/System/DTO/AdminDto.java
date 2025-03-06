@@ -4,8 +4,9 @@ package com.example.Complaints.Management.System.DTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)  // Excludes null values
-public class UserDto {
+public class AdminDto {
 
     private Long userId = null;
 
@@ -19,10 +20,10 @@ public class UserDto {
 
     private List<String> phoneNumbers = null;
 
-    public UserDto() {
+    public AdminDto() {
     }
 
-    public UserDto(String userName, String password, String email, List<String> phoneNumbers) {
+    public AdminDto(String userName, String password, String email, List<String> phoneNumbers) {
         this.userName = userName;
         this.password = password;
         this.email = email;
