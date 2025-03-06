@@ -121,7 +121,7 @@ public class UserService {
     }
 
 
-    public User getUser(Long id) {
+    public User getUserById(Long id) {
 
         try {
             return userRepo.findById(id).get();
@@ -129,5 +129,17 @@ public class UserService {
             throw new ValidationException("User Doesn't Exist !!");
         }
     }
+    public User deleteUser(Long id){
+        User user ;
+        try {
+            user = userRepo.findById(id).get();
+            userRepo.delete(user);
+            entityManager.flush();
+        } catch (NoSuchElementException e){
+            throw new ValidationException("User Doesn't Exist !!");
+        }
+        return user;
+    }
+
     }
 
