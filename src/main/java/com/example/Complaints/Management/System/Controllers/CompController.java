@@ -23,6 +23,21 @@ public class CompController {
     public CompDto editComplaint(@RequestBody CompDto compDto) throws IllegalAccessException {
         return  compService.editComplaint(compDto);
     }
+    @PutMapping("/change-status")
+    public CompDto changeComplaintStatus(
+            @PathParam("adminId") Long adminId,
+            @PathParam("compId") Long compId,
+            @PathParam("newType") String newType) throws IllegalAccessException {
+        return  compService.changeComplaintStatus(adminId,compId,newType);
+    }
+
+    @PutMapping("/change-assignee")
+    public CompDto changeComplaintAssignee(
+            @PathParam("adminId") Long adminId,
+            @PathParam("compId") Long compId,
+            @PathParam("assignee")Long assignee) throws IllegalAccessException {
+        return  compService.changeComplaintAssignee(adminId,compId,assignee);
+    }
 
     @GetMapping("/{id}")
     public CompDto getComplaint(@PathVariable("id") Long id ) throws IllegalAccessException {
@@ -32,6 +47,10 @@ public class CompController {
     @GetMapping("/user/{id}")
     public List<CompDto> getAllUserComplaints(@PathVariable("id") Long id ) throws IllegalAccessException {
         return  compService.getAllUserComplaints(id);
+    }
+    @GetMapping("/admin/{id}")
+    public List<CompDto> getAllAdminAssignedComplaints(@PathVariable("id") Long id ) throws IllegalAccessException {
+        return  compService.getAllAdminAssignedComplaints(id);
     }
 
     @DeleteMapping("/delete")

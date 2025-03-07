@@ -94,6 +94,21 @@ public class CompService {
         }
         return compDtos;
     }
+    @Transactional
+    public List<CompDto> getAllAdminAssignedComplaints(Long id) throws IllegalAccessException {
+        Admin admin;
+        try {
+            admin = adminRepo.findById(id).get();
+        } catch (Exception e) {
+            throw new ValidationException("Admin Doesn't Exist !!");
+        }
+
+        List<CompDto> compDtos = new ArrayList<>();
+        for (Complaint complaint : admin.getComplaints()){
+            compDtos.add(populateComplaintDto(complaint,new CompDto()));
+        }
+        return compDtos;
+    }
 
     private ComplaintStatus createCompStatus(Complaint complaint, Status status, Admin admin){
         ComplaintStatus complaintStatus = new ComplaintStatus(complaint,status,admin,new Date());
@@ -158,6 +173,66 @@ public class CompService {
         }
         return getAllUserComplaints(userId);
     }
+
+    @Transactional
+    public CompDto changeComplaintStatus(Long adminId,Long compId,String newType) throws IllegalAccessException {
+        Complaint complaint = isComplaintExist(compId);
+        if (adminId != complaint.getAdmin().getUserId()){
+            throw new ValidationException(
+                    "Only Assigned Admin Can Change This Complaint Status");
+        }
+        Admin admin = isAdminExist(adminId);
+        Status newstatus = isValidStatusType(newType);
+        if (newType.equals(complaint.getCurrentStatus())){
+            return populateComplaintDto(
+                    complaint,
+                    new CompDto());
+        }
+        createCompStatus(complaint,newstatus,admin);
+        complaint.setCurrentStatus(newType);
+        return populateComplaintDto(
+                complaintRepo.saveAndFlush(complaint),
+                new CompDto());
+    }
+    @Transactional
+    public CompDto changeComplaintAssignee(Long adminId,Long compId,Long newAssignee) throws IllegalAccessException {
+        Complaint complaint = isComplaintExist(compId);
+        Admin admin = isAdminExist(adminId);
+        if (adminId != complaint.getAdmin().getUserId()){
+            throw new ValidationException(
+                    "Only Assigned Admin Can set new Assignee for this Complaint");
+        }
+        Admin assignee = isAdminExist(newAssignee);
+        complaint.setAdmin(assignee);
+        return populateComplaintDto(
+                complaintRepo.saveAndFlush(complaint),
+                new CompDto());
+    }
+
+    @Transactional
+    
+    private Admin isAdminExist(Long id){
+        try {
+            return adminRepo.findById(id).get();
+        } catch (Exception e) {
+            throw new ValidationException("Admin with id = " + id +" Doesn't Exist !!");
+        }
+    }
+
+    private Status isValidStatusType(String type){
+        Status status = statusRepo.findByStatusType(type);
+        if(status == null){
+            throw new ValidationException("Invalid Status Type!!");
+        }
+        return status;
+    }
+    private Complaint isComplaintExist(Long id){
+        try {
+            return complaintRepo.findById(id).get();
+        }catch (Exception e){
+            throw new ValidationException("Complaint with id = "+id+" Doesn't Exist !! ");
+        }
+    }
 //    private CompDto populateComplaintDtoWithAllDetails(Complaint complaint, CompDto compDto) throws IllegalAccessException {
 //
 //    }
@@ -179,6 +254,7 @@ public class CompService {
         compDto.setCreationDate(complaint.getCreationDate().toString());
         return compDto;
     }
+
 
     private static Field getField(Class<?> clazz, String fieldName) {
         while (clazz != null) {
