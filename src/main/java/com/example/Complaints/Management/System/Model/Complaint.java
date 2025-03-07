@@ -16,8 +16,8 @@ public class Complaint {
     private Long compId;
     private String title = "Demo";
     private String description = "Demo-description";
-    @Column(name = "attachment_url")
-    private String attachmentUrl = null;
+//    @Column(name = "attachment_url")
+//    private String attachmentUrl = null;
 
     @Column(name = "creation_date")
     private Date creationDate = new Date();
@@ -38,11 +38,10 @@ public class Complaint {
     @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL)
     private List<ComplaintStatus> complaintStatuses = new ArrayList<>();
 
-    public Complaint(Long compId, String title, String description, String attachmentUrl, Date creationDate, String category, String currentStatus, User user, Admin admin, List<ComplaintStatus> complaintStatuses) {
+    public Complaint(Long compId, String title, String description, Date creationDate, String category, String currentStatus, User user, Admin admin, List<ComplaintStatus> complaintStatuses) {
         this.compId = compId;
         this.title = title;
         this.description = description;
-        this.attachmentUrl = attachmentUrl;
         this.creationDate = creationDate;
         this.category = category;
         this.currentStatus = currentStatus;
@@ -76,14 +75,6 @@ public class Complaint {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getAttachmentUrl() {
-        return attachmentUrl;
-    }
-
-    public void setAttachmentUrl(String attachmentUrl) {
-        this.attachmentUrl = attachmentUrl;
     }
 
     public Date getCreationDate() {
