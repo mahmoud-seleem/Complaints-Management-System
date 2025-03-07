@@ -129,7 +129,7 @@ public class UserService {
         return fields;
     }
 
-    public UserDto getAdminById(Long id) {
+    public UserDto getUserById(Long id) {
         try {
             UserDto response = new UserDto();
             return populateUserDto(userRepo.findById(id).get(),response);

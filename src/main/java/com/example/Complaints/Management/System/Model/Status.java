@@ -1,5 +1,6 @@
 package com.example.Complaints.Management.System.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class Status {
     @Column(name = "status_type")
     private String statusType;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "status",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ComplaintStatus> complaintStatuses = new ArrayList<>();
 

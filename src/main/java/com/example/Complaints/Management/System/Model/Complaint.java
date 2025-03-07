@@ -20,7 +20,7 @@ public class Complaint {
 //    private String attachmentUrl = null;
 
     @Column(name = "creation_date")
-    private Date creationDate = new Date();
+    private Date creationDate = null;
 
     private String category = "normal";
 
