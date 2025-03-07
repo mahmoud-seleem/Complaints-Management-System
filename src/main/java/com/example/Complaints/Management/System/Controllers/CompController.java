@@ -1,6 +1,7 @@
 package com.example.Complaints.Management.System.Controllers;
 
 import com.example.Complaints.Management.System.DTO.CompDto;
+import com.example.Complaints.Management.System.DTO.CompStatusDto;
 import com.example.Complaints.Management.System.services.CompService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,10 @@ public class CompController {
     @GetMapping("/{id}")
     public CompDto getComplaint(@PathVariable("id") Long id ) throws IllegalAccessException {
         return  compService.getComplaintById(id);
+    }
+    @GetMapping("/history/{id}")
+    public List<CompStatusDto> getComplaintHistory(@PathVariable("id") Long id ) throws IllegalAccessException {
+        return  compService.getComplaintHistory(id);
     }
 
     @GetMapping("/user/{id}")

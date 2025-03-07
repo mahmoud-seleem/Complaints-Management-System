@@ -36,6 +36,7 @@ public class Complaint {
     private Admin admin;
 
     @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL)
+    @OrderBy("statusDate ASC")
     private List<ComplaintStatus> complaintStatuses = new ArrayList<>();
 
     public Complaint(Long compId, String title, String description, Date creationDate, String category, String currentStatus, User user, Admin admin, List<ComplaintStatus> complaintStatuses) {

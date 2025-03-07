@@ -1,6 +1,7 @@
 package com.example.Complaints.Management.System.services;
 
 import com.example.Complaints.Management.System.DTO.CompDto;
+import com.example.Complaints.Management.System.DTO.CompStatusDto;
 import com.example.Complaints.Management.System.Model.*;
 import com.example.Complaints.Management.System.Repository.*;
 import jakarta.persistence.EntityManager;
@@ -210,7 +211,23 @@ public class CompService {
     }
 
     @Transactional
-    
+    public List<CompStatusDto> getComplaintHistory(Long compId){
+        Complaint complaint = isComplaintExist(compId);
+        List<CompStatusDto> result = new ArrayList<>();
+        for (ComplaintStatus complaintStatus : complaint.getComplaintStatuses()){
+            result.add(populateCompStatusDto(complaintStatus,new CompStatusDto()));
+        }
+        return result;
+    }
+
+    private CompStatusDto populateCompStatusDto(ComplaintStatus complaintStatus, CompStatusDto compStatusDto){
+        compStatusDto.setStatus(complaintStatus.getStatus().getStatusType());
+        compStatusDto.setDate(complaintStatus.getStatusDate().toString());
+        compStatusDto.setChangerId(complaintStatus.getAdmin().getUserId());
+        return compStatusDto;
+    }
+
+
     private Admin isAdminExist(Long id){
         try {
             return adminRepo.findById(id).get();
