@@ -1,14 +1,8 @@
 package com.example.Complaints.Management.System.services;
 
 import com.example.Complaints.Management.System.DTO.CompDto;
-import com.example.Complaints.Management.System.Model.Admin;
-import com.example.Complaints.Management.System.Model.Complaint;
-import com.example.Complaints.Management.System.Model.ComplaintStatus;
-import com.example.Complaints.Management.System.Model.User;
-import com.example.Complaints.Management.System.Repository.AdminRepo;
-import com.example.Complaints.Management.System.Repository.CompStatusRepo;
-import com.example.Complaints.Management.System.Repository.ComplaintRepo;
-import com.example.Complaints.Management.System.Repository.UserRepo;
+import com.example.Complaints.Management.System.Model.*;
+import com.example.Complaints.Management.System.Repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -39,14 +33,19 @@ public class CompService {
     @Autowired
     private CompStatusRepo compStatusRepo;
 
+    @Autowired
+    private StatusRepo statusRepo;
     @Transactional
     public CompDto createNewComplaint(CompDto compDto) throws IllegalAccessException {
         Complaint complaint = new Complaint();
         populateComplaint(complaint, compDto);
         complaint.setCreationDate(new Date());
-        complaint.setCurrentStatus("SUBMITTED");
+        complaint.setCurrentStatus("Submitted");
         complaintRepo.saveAndFlush(complaint);
-
+        createCompStatus(
+                complaint,
+                statusRepo.findByStatusType("Submitted"),
+                complaint.getAdmin());
         return populateComplaintDto(complaint,compDto);
     }
 
@@ -67,12 +66,38 @@ public class CompService {
         return populateComplaintDto(complaint,compDto);
     }
 
-    private ComplaintStatus createCompStatus(Complaint complaint, Admin admin){
-        ComplaintStatus complaintStatus = new ComplaintStatus();
-        complaintStatus.setComplaint(complaint);
-        complaintStatus.setAdmin(admin);
-        complaintStatus.setStatusDate(new Date());
-        return complaintStatus;
+    @Transactional
+    public CompDto getComplaintById(Long id) throws IllegalAccessException {
+        CompDto compDto = new CompDto();
+        Complaint complaint;
+        try {
+            complaint = complaintRepo.findById(id).get();
+        }catch (Exception e){
+            throw new ValidationException("Complaint Doesn't Exist !! ");
+        }
+        return populateComplaintDto(complaint,compDto);
+    }
+
+
+    @Transactional
+    public List<CompDto> getAllUserComplaints(Long id) throws IllegalAccessException {
+        User user;
+        try {
+            user = userRepo.findById(id).get();
+        } catch (Exception e) {
+            throw new ValidationException("User Doesn't Exist !!");
+        }
+
+        List<CompDto> compDtos = new ArrayList<>();
+        for (Complaint complaint : user.getComplaints()){
+            compDtos.add(populateComplaintDto(complaint,new CompDto()));
+        }
+        return compDtos;
+    }
+
+    private ComplaintStatus createCompStatus(Complaint complaint, Status status, Admin admin){
+        ComplaintStatus complaintStatus = new ComplaintStatus(complaint,status,admin,new Date());
+        return compStatusRepo.saveAndFlush(complaintStatus);
     }
     private void updateComplaintData(Complaint complaint,CompDto compDto){
         String title = compDto.getTitle();
@@ -115,6 +140,27 @@ public class CompService {
         }
         return complaint;
     }
+
+    @Transactional
+    public List<CompDto> deleteComplaint(Long userId,Long compId) throws IllegalAccessException {
+        Complaint complaint;
+        try {
+            complaint = complaintRepo.findById(compId).get();
+        }catch (Exception e){
+            throw new ValidationException("Complaint Doesn't Exist !! ");
+        }
+        if(complaint.getUser().getUserId() == userId){
+            complaintRepo.delete(complaint);
+            entityManager.flush();
+            System.out.println("deleted");
+        }else {
+            throw new ValidationException("User Can Only Delete From His Own Complaints !");
+        }
+        return getAllUserComplaints(userId);
+    }
+//    private CompDto populateComplaintDtoWithAllDetails(Complaint complaint, CompDto compDto) throws IllegalAccessException {
+//
+//    }
     private CompDto populateComplaintDto(Complaint complaint, CompDto compDto) throws IllegalAccessException {
         for (Field entityField : getAllFields(complaint.getClass())) {
             entityField.setAccessible(true);

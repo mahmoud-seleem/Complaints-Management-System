@@ -36,6 +36,12 @@ public class ComplaintStatus {
         this.statusDate = statusDate;
     }
 
+    public ComplaintStatus(Complaint complaint, Status status, Admin admin, Date statusDate) {
+        this.complaint = complaint;
+        this.status = status;
+        this.admin = admin;
+        this.statusDate = statusDate;
+    }
     public ComplaintStatus() {
     }
 
