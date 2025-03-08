@@ -230,7 +230,19 @@ public class CompService {
     }
 
     @Transactional
-    public List<CompDto> getUserNextComplaints(Long userId,String cursor, int size, String status) throws IllegalAccessException {
+    public List<CompDto> getUserNextComplaints(Long userId,
+                                               String cursor,
+                                               int size,
+                                               String status,
+                                               boolean isAdmin) throws IllegalAccessException {
+        if (status != null){
+            isValidStatusType(status);
+        }
+        if(isAdmin == true){
+            isAdminExist(userId);
+        }else {
+            isUserExist(userId);
+        }
         System.out.println("cursor: "+cursor);
         Date lastCursor = null;
         if (cursor == null) {
@@ -246,8 +258,12 @@ public class CompService {
         }
         System.out.println(lastCursor);
         List<CompDto> result = new ArrayList<>();
-        List<Complaint> complaints = complaintRepo.findUserNextComplaintsNative(userId, status,lastCursor,size);
-
+        List<Complaint> complaints;
+        if (isAdmin == true ){
+            complaints = complaintRepo.findAdminNextComplaintsNative(userId, status,lastCursor,size);
+        }else {
+            complaints = complaintRepo.findUserNextComplaintsNative(userId, status,lastCursor,size);
+        }
         for (Complaint complaint : complaints){
             System.out.println(complaint.getCreationDate());
             result.add(populateComplaintDto(complaint,new CompDto()));
@@ -256,9 +272,20 @@ public class CompService {
     }
 
         @Transactional
-        public List<CompDto> getUserPrevComplaints(Long userId,String cursor, int size, String status) throws IllegalAccessException {
-
-            Date lastCursor = null;
+        public List<CompDto> getUserPrevComplaints(Long userId,
+                                                   String cursor,
+                                                   int size,
+                                                   String status,
+                                                   boolean isAdmin) throws IllegalAccessException {
+            if (status != null){
+                isValidStatusType(status);
+            }
+            if(isAdmin == true){
+                isAdminExist(userId);
+            }else {
+                isUserExist(userId);
+            }
+            Date lastCursor;
             if (cursor == null) {
                 lastCursor = new Date(0);
             }else {
@@ -272,7 +299,12 @@ public class CompService {
             }
             System.out.println(lastCursor);
             List<CompDto> result = new ArrayList<>();
-            List<Complaint> complaints = complaintRepo.findUserPrevComplaintsNative(userId, status,lastCursor,size);
+            List<Complaint> complaints;
+            if (isAdmin == true ){
+                complaints = complaintRepo.findAdminPrevComplaintsNative(userId, status,lastCursor,size);
+            }else {
+                complaints = complaintRepo.findUserPrevComplaintsNative(userId, status,lastCursor,size);
+            }
             for (Complaint complaint : complaints){
                 System.out.println(complaint.getCreationDate());
                 result.add(populateComplaintDto(complaint,new CompDto()));
@@ -292,6 +324,13 @@ public class CompService {
             return adminRepo.findById(id).get();
         } catch (Exception e) {
             throw new ValidationException("Admin with id = " + id +" Doesn't Exist !!");
+        }
+    }
+    private User isUserExist(Long id){
+        try {
+            return userRepo.findById(id).get();
+        } catch (Exception e) {
+            throw new ValidationException("User with id = " + id +" Doesn't Exist !!");
         }
     }
 

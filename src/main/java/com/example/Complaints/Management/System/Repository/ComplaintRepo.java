@@ -44,6 +44,19 @@ public interface ComplaintRepo extends JpaRepository<Complaint,Long> {
             @Param("lastCursor") Date lastCursor,
             @Param("pageSize") int pageSize);
 
+    @Query(value = """
+    SELECT * FROM complaint 
+    WHERE admin_id = :userId 
+    AND ( :currentStatus IS NULL OR current_status = :currentStatus )
+    AND creation_date > :lastCursor
+    ORDER BY creation_date ASC
+    LIMIT :pageSize 
+""", nativeQuery = true)
+    List<Complaint> findAdminNextComplaintsNative(
+            @Param("userId") Long userId,
+            @Param("currentStatus") String currentStatus,
+            @Param("lastCursor") Date lastCursor,
+            @Param("pageSize") int pageSize);
 
     @Query(value = """
     SELECT * FROM (
@@ -61,5 +74,24 @@ public interface ComplaintRepo extends JpaRepository<Complaint,Long> {
             @Param("currentStatus") String currentStatus,
             @Param("lastCursor") Date lastCursor,
             @Param("pageSize") int pageSize);
+
+
+    @Query(value = """
+    SELECT * FROM (
+        SELECT * FROM complaint 
+        WHERE Admin_id = :userId 
+        AND ( :currentStatus IS NULL OR current_status = :currentStatus )
+        AND creation_date < :lastCursor
+        ORDER BY creation_date DESC
+        LIMIT :pageSize
+    ) AS subquery
+    ORDER BY creation_date ASC
+""", nativeQuery = true)
+    List<Complaint> findAdminPrevComplaintsNative(
+            @Param("userId") Long userId,
+            @Param("currentStatus") String currentStatus,
+            @Param("lastCursor") Date lastCursor,
+            @Param("pageSize") int pageSize);
+
 
 }

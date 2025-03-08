@@ -74,7 +74,7 @@ public class CompController {
             @RequestParam(required = false) String cursor,
             @RequestParam(defaultValue = "2") int size,
             @RequestParam(required = false) String status) throws IllegalAccessException {
-        return compService.getUserNextComplaints(userId,cursor,size,status);
+        return compService.getUserNextComplaints(userId,cursor,size,status,false);
     }
 
     @GetMapping("/user/{userId}/prev")
@@ -83,6 +83,23 @@ public class CompController {
             @RequestParam(required = false) String cursor,
             @RequestParam(defaultValue = "2") int size,
             @RequestParam(required = false) String status) throws IllegalAccessException {
-        return compService.getUserPrevComplaints(userId,cursor,size,status);
+        return compService.getUserPrevComplaints(userId,cursor,size,status,false);
+    }
+    @GetMapping("/admin/{userId}/next")
+    public List<CompDto> getAdminNextComplaints(
+            @PathVariable Long userId,
+            @RequestParam(required = false) String cursor,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(required = false) String status) throws IllegalAccessException {
+        return compService.getUserNextComplaints(userId,cursor,size,status,true);
+    }
+
+    @GetMapping("/admin/{userId}/prev")
+    public List<CompDto> getAdminPrevComplaints(
+            @PathVariable Long userId,
+            @RequestParam(required = false) String cursor,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(required = false) String status) throws IllegalAccessException {
+        return compService.getUserPrevComplaints(userId,cursor,size,status,true);
     }
 }
