@@ -36,7 +36,7 @@ public interface ComplaintRepo extends JpaRepository<Complaint,Long> {
     AND ( :currentStatus IS NULL OR current_status = :currentStatus )
     AND creation_date > :lastCursor
     ORDER BY creation_date ASC
-    LIMIT :pageSize
+    LIMIT :pageSize 
 """, nativeQuery = true)
     List<Complaint> findUserNextComplaintsNative(
             @Param("userId") Long userId,

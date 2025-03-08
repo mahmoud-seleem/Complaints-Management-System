@@ -231,13 +231,13 @@ public class CompService {
 
     @Transactional
     public List<CompDto> getUserNextComplaints(Long userId,String cursor, int size, String status) throws IllegalAccessException {
-
+        System.out.println("cursor: "+cursor);
         Date lastCursor = null;
         if (cursor == null) {
           lastCursor = new Date(0);
         }else {
             try {
-                Date.from(
+                lastCursor = Date.from(
                         LocalDateTime.parse(cursor, FORMATTER)
                                 .atZone(ZoneId.systemDefault()).toInstant());
             }catch (Exception e){
@@ -246,7 +246,7 @@ public class CompService {
         }
         System.out.println(lastCursor);
         List<CompDto> result = new ArrayList<>();
-        List<Complaint> complaints = complaintRepo.findNextComplaintsNative(userId, status,lastCursor,size);
+        List<Complaint> complaints = complaintRepo.findUserNextComplaintsNative(userId, status,lastCursor,size);
 
         for (Complaint complaint : complaints){
             System.out.println(complaint.getCreationDate());
@@ -263,7 +263,7 @@ public class CompService {
                 lastCursor = new Date(0);
             }else {
                 try {
-                    Date.from(
+                    lastCursor = Date.from(
                             LocalDateTime.parse(cursor, FORMATTER)
                                     .atZone(ZoneId.systemDefault()).toInstant());
                 }catch (Exception e){
@@ -272,8 +272,7 @@ public class CompService {
             }
             System.out.println(lastCursor);
             List<CompDto> result = new ArrayList<>();
-            List<Complaint> complaints = complaintRepo.findNextComplaintsNative(userId, status,lastCursor,size);
-
+            List<Complaint> complaints = complaintRepo.findUserPrevComplaintsNative(userId, status,lastCursor,size);
             for (Complaint complaint : complaints){
                 System.out.println(complaint.getCreationDate());
                 result.add(populateComplaintDto(complaint,new CompDto()));

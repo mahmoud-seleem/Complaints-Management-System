@@ -69,23 +69,20 @@ public class CompController {
     }
     // Fetch NEXT complaints (oldest to newest)
     @GetMapping("/user/{userId}/next")
-    public List<CompDto> getNextComplaints(
+    public List<CompDto> getUserNextComplaints(
             @PathVariable Long userId,
             @RequestParam(required = false) String cursor,
             @RequestParam(defaultValue = "2") int size,
             @RequestParam(required = false) String status) throws IllegalAccessException {
-        return compService.getNextComplaints(userId,cursor,size,status);
+        return compService.getUserNextComplaints(userId,cursor,size,status);
     }
 
-    // Fetch PREVIOUS complaints (newest to older)
     @GetMapping("/user/{userId}/prev")
-    public ResponseEntity<Slice<Complaint>> getPreviousComplaints(
+    public List<CompDto> getUserPrevComplaints(
             @PathVariable Long userId,
-            @RequestParam Optional<Date> cursor,
+            @RequestParam(required = false) String cursor,
             @RequestParam(defaultValue = "2") int size,
-            @RequestParam Optional<String> status) {
-
-        Slice<Complaint> complaints = compService.getPreviousComplaints(userId, cursor, size, status);
-        return ResponseEntity.ok(complaints);
+            @RequestParam(required = false) String status) throws IllegalAccessException {
+        return compService.getUserPrevComplaints(userId,cursor,size,status);
     }
 }
