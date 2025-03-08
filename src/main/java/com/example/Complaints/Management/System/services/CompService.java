@@ -7,15 +7,21 @@ import com.example.Complaints.Management.System.Repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
+import javax.swing.*;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class CompService {
@@ -36,6 +42,9 @@ public class CompService {
 
     @Autowired
     private StatusRepo statusRepo;
+
+    private static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
     @Transactional
     public CompDto createNewComplaint(CompDto compDto) throws IllegalAccessException {
         Complaint complaint = new Complaint();
@@ -220,6 +229,57 @@ public class CompService {
         return result;
     }
 
+    @Transactional
+    public List<CompDto> getUserNextComplaints(Long userId,String cursor, int size, String status) throws IllegalAccessException {
+
+        Date lastCursor = null;
+        if (cursor == null) {
+          lastCursor = new Date(0);
+        }else {
+            try {
+                Date.from(
+                        LocalDateTime.parse(cursor, FORMATTER)
+                                .atZone(ZoneId.systemDefault()).toInstant());
+            }catch (Exception e){
+                throw new ValidationException(e.getMessage());
+            }
+        }
+        System.out.println(lastCursor);
+        List<CompDto> result = new ArrayList<>();
+        List<Complaint> complaints = complaintRepo.findNextComplaintsNative(userId, status,lastCursor,size);
+
+        for (Complaint complaint : complaints){
+            System.out.println(complaint.getCreationDate());
+            result.add(populateComplaintDto(complaint,new CompDto()));
+        }
+        return result;
+    }
+
+        @Transactional
+        public List<CompDto> getUserPrevComplaints(Long userId,String cursor, int size, String status) throws IllegalAccessException {
+
+            Date lastCursor = null;
+            if (cursor == null) {
+                lastCursor = new Date(0);
+            }else {
+                try {
+                    Date.from(
+                            LocalDateTime.parse(cursor, FORMATTER)
+                                    .atZone(ZoneId.systemDefault()).toInstant());
+                }catch (Exception e){
+                    throw new ValidationException(e.getMessage());
+                }
+            }
+            System.out.println(lastCursor);
+            List<CompDto> result = new ArrayList<>();
+            List<Complaint> complaints = complaintRepo.findNextComplaintsNative(userId, status,lastCursor,size);
+
+            for (Complaint complaint : complaints){
+                System.out.println(complaint.getCreationDate());
+                result.add(populateComplaintDto(complaint,new CompDto()));
+            }
+            return result;
+    }
     private CompStatusDto populateCompStatusDto(ComplaintStatus complaintStatus, CompStatusDto compStatusDto){
         compStatusDto.setStatus(complaintStatus.getStatus().getStatusType());
         compStatusDto.setDate(complaintStatus.getStatusDate().toString());

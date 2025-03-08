@@ -8,7 +8,9 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "complaint")
+@Table(name = "complaint",indexes = {
+@Index(name = "idx_creation_date", columnList = "creation_date")}
+    )
 public class Complaint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +22,7 @@ public class Complaint {
 //    private String attachmentUrl = null;
 
     @Column(name = "creation_date")
+    @Temporal(TemporalType.TIMESTAMP) // Ensures proper Date storage
     private Date creationDate = null;
 
     private String category = "normal";

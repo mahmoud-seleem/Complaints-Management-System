@@ -2,12 +2,17 @@ package com.example.Complaints.Management.System.Controllers;
 
 import com.example.Complaints.Management.System.DTO.CompDto;
 import com.example.Complaints.Management.System.DTO.CompStatusDto;
+import com.example.Complaints.Management.System.Model.Complaint;
 import com.example.Complaints.Management.System.services.CompService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/complaint")
@@ -62,6 +67,25 @@ public class CompController {
     public List<CompDto> deleteUserComplaint(@PathParam("userId") Long userId,@PathParam("compId") Long compId) throws IllegalAccessException {
         return  compService.deleteComplaint(userId,compId);
     }
+    // Fetch NEXT complaints (oldest to newest)
+    @GetMapping("/user/{userId}/next")
+    public List<CompDto> getNextComplaints(
+            @PathVariable Long userId,
+            @RequestParam(required = false) String cursor,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(required = false) String status) throws IllegalAccessException {
+        return compService.getNextComplaints(userId,cursor,size,status);
+    }
 
+    // Fetch PREVIOUS complaints (newest to older)
+    @GetMapping("/user/{userId}/prev")
+    public ResponseEntity<Slice<Complaint>> getPreviousComplaints(
+            @PathVariable Long userId,
+            @RequestParam Optional<Date> cursor,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestParam Optional<String> status) {
 
+        Slice<Complaint> complaints = compService.getPreviousComplaints(userId, cursor, size, status);
+        return ResponseEntity.ok(complaints);
+    }
 }
