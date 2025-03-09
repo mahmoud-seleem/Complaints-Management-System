@@ -1,7 +1,7 @@
 package com.example.Complaints.Management.System.services;
 
 import com.example.Complaints.Management.System.DTO.UserDto;
-import com.example.Complaints.Management.System.Model.User;
+import com.example.Complaints.Management.System.Entities.User;
 import com.example.Complaints.Management.System.Repository.UserRepo;
 import com.example.Complaints.Management.System.Security.SecurityUtils;
 import jakarta.persistence.EntityManager;
@@ -39,9 +39,10 @@ public class UserService {
     @Transactional
     public UserDto registerUser(UserDto userDto){
         // validation logic on the DTO object to be implemented here
-        User registeredUser = userRepo.save(populateUser(userDto));
-        entityManager.refresh(registeredUser);
-        userDto.setUserId(registeredUser.getUserId());
+        User user = populateUser(userDto);
+        user = userRepo.saveAndFlush(user);
+        //entityManager.refresh(registeredUser);
+        userDto.setUserId(user.getUserId());
         return userDto;
     }
     private User populateUser(UserDto userDto){

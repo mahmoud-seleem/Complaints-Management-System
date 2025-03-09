@@ -3,7 +3,7 @@ package com.example.Complaints.Management.System.Controllers;
 import com.example.Complaints.Management.System.DTO.CompDto;
 import com.example.Complaints.Management.System.DTO.CompStatusDto;
 import com.example.Complaints.Management.System.DTO.UserDto;
-import com.example.Complaints.Management.System.Model.Status;
+import com.example.Complaints.Management.System.Entities.Status;
 import com.example.Complaints.Management.System.services.CompService;
 import com.example.Complaints.Management.System.services.StatusService;
 import com.example.Complaints.Management.System.services.UserService;

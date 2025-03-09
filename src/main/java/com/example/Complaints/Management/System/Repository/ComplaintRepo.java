@@ -1,7 +1,6 @@
 package com.example.Complaints.Management.System.Repository;
 
-import com.example.Complaints.Management.System.Model.Complaint;
-import org.springframework.data.domain.Page;
+import com.example.Complaints.Management.System.Entities.Complaint;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;

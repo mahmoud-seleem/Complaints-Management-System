@@ -12,8 +12,8 @@ import java.util.Date;
 @Component
 public class JWTUtils {
 
-    private static final String SECRET_KEY = "your_super_secret_key_for_jwt_signing"; // Use at least 32 chars
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 60; // 1 hour
+    private static final String SECRET_KEY = "MY-SUPER-SECRET-JWT-KEY-FOR-HASHING";
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 60;
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
     public String generateToken(String username) {

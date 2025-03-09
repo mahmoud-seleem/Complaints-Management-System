@@ -1,9 +1,7 @@
 package com.example.Complaints.Management.System.Repository;
 
-import com.example.Complaints.Management.System.Model.Admin;
-import com.example.Complaints.Management.System.Model.GeneralUser;
+import com.example.Complaints.Management.System.Entities.GeneralUser;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository

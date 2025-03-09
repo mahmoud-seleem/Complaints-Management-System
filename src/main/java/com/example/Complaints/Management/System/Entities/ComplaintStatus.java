@@ -1,4 +1,4 @@
-package com.example.Complaints.Management.System.Model;
+package com.example.Complaints.Management.System.Entities;
 
 import jakarta.persistence.*;
 

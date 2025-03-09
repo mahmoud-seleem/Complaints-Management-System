@@ -1,11 +1,7 @@
 package com.example.Complaints.Management.System.Security;
 
-import com.example.Complaints.Management.System.Model.Admin;
-import com.example.Complaints.Management.System.Model.GeneralUser;
-import com.example.Complaints.Management.System.Model.User;
-import com.example.Complaints.Management.System.Repository.AdminRepo;
+import com.example.Complaints.Management.System.Entities.GeneralUser;
 import com.example.Complaints.Management.System.Repository.GeneralUserRepo;
-import com.example.Complaints.Management.System.Repository.UserRepo;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

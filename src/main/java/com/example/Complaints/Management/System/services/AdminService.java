@@ -1,7 +1,7 @@
 package com.example.Complaints.Management.System.services;
 
 import com.example.Complaints.Management.System.DTO.AdminDto;
-import com.example.Complaints.Management.System.Model.Admin;
+import com.example.Complaints.Management.System.Entities.Admin;
 import com.example.Complaints.Management.System.Repository.AdminRepo;
 import com.example.Complaints.Management.System.Security.SecurityUtils;
 import jakarta.persistence.EntityManager;
@@ -9,7 +9,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;

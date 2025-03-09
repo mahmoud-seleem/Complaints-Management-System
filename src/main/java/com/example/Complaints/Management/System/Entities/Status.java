@@ -1,4 +1,4 @@
-package com.example.Complaints.Management.System.Model;
+package com.example.Complaints.Management.System.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -22,6 +22,10 @@ public class Status {
     @OneToMany(mappedBy = "status",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ComplaintStatus> complaintStatuses = new ArrayList<>();
 
+    public Status(long l, String statusType) {
+    }
+
+    public Status(){}
     public Long getStatusId() {
         return statusId;
     }

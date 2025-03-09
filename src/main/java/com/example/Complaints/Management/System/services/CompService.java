@@ -2,21 +2,15 @@ package com.example.Complaints.Management.System.services;
 
 import com.example.Complaints.Management.System.DTO.CompDto;
 import com.example.Complaints.Management.System.DTO.CompStatusDto;
-import com.example.Complaints.Management.System.Model.*;
+import com.example.Complaints.Management.System.Entities.*;
 import com.example.Complaints.Management.System.Repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
-import javax.swing.*;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.ZoneId;

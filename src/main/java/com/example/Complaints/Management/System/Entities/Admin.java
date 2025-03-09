@@ -1,6 +1,5 @@
-package com.example.Complaints.Management.System.Model;
+package com.example.Complaints.Management.System.Entities;
 
-import com.example.Complaints.Management.System.Utils.Role;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

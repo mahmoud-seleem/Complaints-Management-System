@@ -1,6 +1,6 @@
 package com.example.Complaints.Management.System.services;
 
-import com.example.Complaints.Management.System.Model.Status;
+import com.example.Complaints.Management.System.Entities.Status;
 import com.example.Complaints.Management.System.Repository.StatusRepo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

@@ -1,19 +1,5 @@
 package com.example.Complaints.Management.System.Controllers;
 
-import com.example.Complaints.Management.System.DTO.CompDto;
-import com.example.Complaints.Management.System.DTO.CompStatusDto;
-import com.example.Complaints.Management.System.Model.Complaint;
-import com.example.Complaints.Management.System.services.CompService;
-import jakarta.websocket.server.PathParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Slice;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 //@RestController
 //@RequestMapping("/api/complaint")
 public class CompController {

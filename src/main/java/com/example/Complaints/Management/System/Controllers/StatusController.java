@@ -1,6 +1,6 @@
 package com.example.Complaints.Management.System.Controllers;
 
-import com.example.Complaints.Management.System.Model.Status;
+import com.example.Complaints.Management.System.Entities.Status;
 import com.example.Complaints.Management.System.services.StatusService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
