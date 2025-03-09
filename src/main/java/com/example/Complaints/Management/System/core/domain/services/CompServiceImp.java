@@ -2,6 +2,7 @@ package com.example.Complaints.Management.System.core.domain.services;
 
 import com.example.Complaints.Management.System.core.application.dto.CompDto;
 import com.example.Complaints.Management.System.core.application.dto.CompStatusDto;
+import com.example.Complaints.Management.System.core.application.services.CompService;
 import com.example.Complaints.Management.System.core.domain.entities.*;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.*;
 import jakarta.persistence.EntityManager;
@@ -18,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
-public class CompService {
+public class CompServiceImp implements CompService {
     @Autowired
     private ComplaintRepo complaintRepo;
 
