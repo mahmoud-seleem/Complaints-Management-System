@@ -7,4 +7,5 @@ public class SecurityUtils {
     public static final BCryptPasswordEncoder PASSWORD_ENCODER =
             new BCryptPasswordEncoder(10);
 
+
 }

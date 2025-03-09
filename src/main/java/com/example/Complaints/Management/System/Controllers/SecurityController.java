@@ -2,6 +2,7 @@ package com.example.Complaints.Management.System.Controllers;
 
 import com.example.Complaints.Management.System.DTO.AdminDto;
 import com.example.Complaints.Management.System.DTO.UserDto;
+import com.example.Complaints.Management.System.Security.JWTUtils;
 import com.example.Complaints.Management.System.services.AdminService;
 import com.example.Complaints.Management.System.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,10 @@ public class SecurityController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTUtils jwtUtils;
+
 
     @Autowired
     private HttpSession session; // Inject HttpSession for session management
@@ -66,8 +71,9 @@ public class SecurityController {
             // Store authentication in SecurityContext
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            String token = jwtUtils.generateToken(password);
             // Return a welcome message
-            return ResponseEntity.ok("Welcome, " + username + "! You are now logged in.");
+            return ResponseEntity.ok("Welcome, " + username + "! You are now logged in.\n\n "+token);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
