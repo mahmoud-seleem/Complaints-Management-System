@@ -1,6 +1,7 @@
 package com.example.Complaints.Management.System.core.domain.services;
 
 import com.example.Complaints.Management.System.core.application.dto.AdminDto;
+import com.example.Complaints.Management.System.core.application.services.AdminService;
 import com.example.Complaints.Management.System.core.domain.entities.Admin;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.AdminRepo;
 import com.example.Complaints.Management.System.shared.Security.SecurityUtils;
@@ -19,9 +20,9 @@ import java.util.NoSuchElementException;
 
 @Service
 @Transactional
-public class AdminService {
+public class AdminServiceImp implements AdminService {
 
-    public AdminService() {
+    public AdminServiceImp() {
     }
 
     @Autowired

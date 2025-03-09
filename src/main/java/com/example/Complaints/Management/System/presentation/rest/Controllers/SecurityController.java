@@ -3,7 +3,7 @@ package com.example.Complaints.Management.System.presentation.rest.Controllers;
 import com.example.Complaints.Management.System.core.application.dto.AdminDto;
 import com.example.Complaints.Management.System.core.application.dto.UserDto;
 import com.example.Complaints.Management.System.shared.Security.JWTUtils;
-import com.example.Complaints.Management.System.core.domain.services.AdminService;
+import com.example.Complaints.Management.System.core.domain.services.AdminServiceImp;
 import com.example.Complaints.Management.System.core.domain.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth/")
 public class SecurityController {
     @Autowired
-    private AdminService adminService;
+    private AdminServiceImp adminService;
 
     @Autowired
     private UserService userService;

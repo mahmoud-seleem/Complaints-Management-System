@@ -2,7 +2,7 @@ package com.example.Complaints.Management.System.services;
 
 import com.example.Complaints.Management.System.core.application.dto.AdminDto;
 import com.example.Complaints.Management.System.core.domain.entities.Admin;
-import com.example.Complaints.Management.System.core.domain.services.AdminService;
+import com.example.Complaints.Management.System.core.domain.services.AdminServiceImp;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.AdminRepo;
 import com.example.Complaints.Management.System.shared.Security.SecurityUtils;
 import jakarta.validation.ValidationException;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 class AdminServiceTest {
 
     @InjectMocks
-    private AdminService adminService;
+    private AdminServiceImp adminService;
 
     @Mock
     private AdminRepo adminRepo;

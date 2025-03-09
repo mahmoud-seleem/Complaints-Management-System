@@ -3,7 +3,8 @@ package com.example.Complaints.Management.System.presentation.rest.Controllers;
 import com.example.Complaints.Management.System.core.application.dto.AdminDto;
 import com.example.Complaints.Management.System.core.application.dto.CompDto;
 import com.example.Complaints.Management.System.core.application.dto.CompStatusDto;
-import com.example.Complaints.Management.System.core.domain.services.AdminService;
+import com.example.Complaints.Management.System.core.application.services.AdminService;
+import com.example.Complaints.Management.System.core.domain.services.AdminServiceImp;
 import com.example.Complaints.Management.System.core.domain.services.CompService;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
@@ -21,10 +22,7 @@ public class AdminController {
 
     @Autowired
     private CompService compService;
-//    @PostMapping("/sign-up")
-//    public AdminDto registerAdmin(@Valid @RequestBody AdminDto adminDto){
-//        return adminService.registerAdmin(adminDto);
-//    }
+
     @PutMapping("/update-info")
     public AdminDto updateAdmin(@Valid @RequestBody AdminDto adminDto) throws Exception{
         return adminService.updateAdmin(adminDto);
