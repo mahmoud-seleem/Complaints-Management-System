@@ -19,10 +19,10 @@ public class GeneralUser {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "user_name")
+    @Column(unique = true, name = "user_name")
     private String userName = "user";
 
-    @Column(name = "password")
+    @Column(nullable = false, name = "password")
     private String password = "123456";
 
     @Column(name = "email")

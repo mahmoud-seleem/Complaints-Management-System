@@ -3,6 +3,7 @@ package com.example.Complaints.Management.System.services;
 import com.example.Complaints.Management.System.DTO.UserDto;
 import com.example.Complaints.Management.System.Model.User;
 import com.example.Complaints.Management.System.Repository.UserRepo;
+import com.example.Complaints.Management.System.Security.SecurityUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -46,7 +47,7 @@ public class UserService {
     private User populateUser(UserDto userDto){
         User user = new User();
         user.setUserName(userDto.getUserName());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(SecurityUtils.PASSWORD_ENCODER.encode(userDto.getPassword()));
         user.setEmail(userDto.getEmail());
         user.setAge(userDto.getAge());
         List<String> phones = user.getPhoneNumbers();
@@ -90,6 +91,7 @@ public class UserService {
                 }
             }
         }
+        user.setPassword(SecurityUtils.PASSWORD_ENCODER.encode(user.getPassword()));
         return user;
     }
     private UserDto populateUserDto(User user, UserDto userDto) throws IllegalAccessException {

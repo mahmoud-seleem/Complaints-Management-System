@@ -3,11 +3,13 @@ package com.example.Complaints.Management.System.services;
 import com.example.Complaints.Management.System.DTO.AdminDto;
 import com.example.Complaints.Management.System.Model.Admin;
 import com.example.Complaints.Management.System.Repository.AdminRepo;
+import com.example.Complaints.Management.System.Security.SecurityUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -41,7 +43,7 @@ public class AdminService {
     private Admin populateAdmin(AdminDto adminDto){
         Admin admin = new Admin();
         admin.setUserName(adminDto.getUserName());
-        admin.setPassword(adminDto.getPassword());
+        admin.setPassword(SecurityUtils.PASSWORD_ENCODER.encode(adminDto.getPassword()));
         admin.setEmail(adminDto.getEmail());
         admin.setAge(adminDto.getAge());
         List<String> phones = admin.getPhoneNumbers();
@@ -84,6 +86,7 @@ public class AdminService {
                 }
             }
         }
+        admin.setPassword(SecurityUtils.PASSWORD_ENCODER.encode(admin.getPassword()));
         return admin ;
     }
     private AdminDto populateAdminDto(Admin admin , AdminDto adminDto) throws IllegalAccessException {
