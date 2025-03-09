@@ -1,9 +1,10 @@
 package com.example.Complaints.Management.System.services;
 
-import com.example.Complaints.Management.System.DTO.AdminDto;
-import com.example.Complaints.Management.System.Entities.Admin;
-import com.example.Complaints.Management.System.Repository.AdminRepo;
-import com.example.Complaints.Management.System.Security.SecurityUtils;
+import com.example.Complaints.Management.System.core.application.dto.AdminDto;
+import com.example.Complaints.Management.System.core.domain.entities.Admin;
+import com.example.Complaints.Management.System.core.domain.services.AdminService;
+import com.example.Complaints.Management.System.core.infrastructure.Repository.AdminRepo;
+import com.example.Complaints.Management.System.shared.Security.SecurityUtils;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

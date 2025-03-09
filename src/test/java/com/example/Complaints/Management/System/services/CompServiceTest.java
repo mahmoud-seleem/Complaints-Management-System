@@ -1,11 +1,12 @@
 package com.example.Complaints.Management.System.services;
 
-import com.example.Complaints.Management.System.DTO.CompDto;
-import com.example.Complaints.Management.System.Entities.Admin;
-import com.example.Complaints.Management.System.Entities.Complaint;
-import com.example.Complaints.Management.System.Entities.Status;
-import com.example.Complaints.Management.System.Entities.User;
-import com.example.Complaints.Management.System.Repository.*;
+import com.example.Complaints.Management.System.core.application.dto.CompDto;
+import com.example.Complaints.Management.System.core.domain.entities.Admin;
+import com.example.Complaints.Management.System.core.domain.entities.Complaint;
+import com.example.Complaints.Management.System.core.domain.entities.Status;
+import com.example.Complaints.Management.System.core.domain.entities.User;
+import com.example.Complaints.Management.System.core.domain.services.CompService;
+import com.example.Complaints.Management.System.core.infrastructure.Repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;

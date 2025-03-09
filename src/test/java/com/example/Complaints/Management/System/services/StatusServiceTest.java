@@ -1,7 +1,8 @@
 package com.example.Complaints.Management.System.services;
 
-import com.example.Complaints.Management.System.Entities.Status;
-import com.example.Complaints.Management.System.Repository.StatusRepo;
+import com.example.Complaints.Management.System.core.domain.entities.Status;
+import com.example.Complaints.Management.System.core.domain.services.StatusService;
+import com.example.Complaints.Management.System.core.infrastructure.Repository.StatusRepo;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

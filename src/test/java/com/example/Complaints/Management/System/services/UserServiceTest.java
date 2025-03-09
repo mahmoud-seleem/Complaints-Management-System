@@ -1,15 +1,14 @@
 package com.example.Complaints.Management.System.services;
 
-import com.example.Complaints.Management.System.DTO.UserDto;
-import com.example.Complaints.Management.System.Entities.User;
-import com.example.Complaints.Management.System.Repository.UserRepo;
+import com.example.Complaints.Management.System.core.application.dto.UserDto;
+import com.example.Complaints.Management.System.core.domain.entities.User;
+import com.example.Complaints.Management.System.core.domain.services.UserService;
+import com.example.Complaints.Management.System.core.infrastructure.Repository.UserRepo;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
