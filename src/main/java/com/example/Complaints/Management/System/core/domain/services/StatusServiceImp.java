@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class StatusService {
+public class StatusServiceImp {
 
     @Autowired
     private StatusRepo statusRepo;

@@ -12,48 +12,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Transactional
-public class StatusService {
+public interface StatusService {
 
-    @Autowired
-    private StatusRepo statusRepo;
+    Status createNewStatus(String statusType);
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    List<Status> getAllStatuses();
 
-    @Transactional
-    public Status createNewStatus(String statusType){
-        // check for the type if exists (no duplication)
-        Status status = new Status();
-        status.setStatusType(statusType);
-        return statusRepo.saveAndFlush(status);
-    }
+    Status updateStatus(Long id, String newType) throws ValidationException;
 
-    @Transactional
-    public List<Status> getAllStatuses(){
-        return statusRepo.findAll();
-    }
-    @Transactional
-    public Status updateStatus(Long id,String newType){
-        Status status;
-        try{
-            status = statusRepo.findById(id).get();
-        }catch (Exception e ){
-            throw new ValidationException("Status Doesn't Exist !!");
-        }
-        status.setStatusType(newType);
-        return statusRepo.saveAndFlush(status);
-    }
-
-    @Transactional
-    public void deleteStatus(Long id){
-        Status status;
-        try{
-            status = statusRepo.findById(id).get();
-        }catch (Exception e ){
-            throw new ValidationException("Status Doesn't Exist !!");
-        }
-        statusRepo.delete(status);
-    }
-
+    void deleteStatus(Long id) throws ValidationException;
 }

@@ -1,7 +1,7 @@
 package com.example.Complaints.Management.System.presentation.rest.Controllers;
 
+import com.example.Complaints.Management.System.core.application.services.StatusService;
 import com.example.Complaints.Management.System.core.domain.entities.Status;
-import com.example.Complaints.Management.System.core.domain.services.StatusService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

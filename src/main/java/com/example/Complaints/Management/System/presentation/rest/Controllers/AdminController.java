@@ -5,7 +5,6 @@ import com.example.Complaints.Management.System.core.application.dto.CompDto;
 import com.example.Complaints.Management.System.core.application.dto.CompStatusDto;
 import com.example.Complaints.Management.System.core.application.services.AdminService;
 import com.example.Complaints.Management.System.core.application.services.CompService;
-import com.example.Complaints.Management.System.core.domain.services.AdminServiceImp;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;

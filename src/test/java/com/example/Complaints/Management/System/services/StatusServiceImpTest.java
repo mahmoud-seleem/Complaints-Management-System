@@ -1,7 +1,7 @@
 package com.example.Complaints.Management.System.services;
 
 import com.example.Complaints.Management.System.core.domain.entities.Status;
-import com.example.Complaints.Management.System.core.domain.services.StatusService;
+import com.example.Complaints.Management.System.core.domain.services.StatusServiceImp;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.StatusRepo;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,10 +18,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class StatusServiceTest {
+class StatusServiceImpTest {
 
     @InjectMocks
-    private StatusService statusService;
+    private StatusServiceImp statusServiceImp;
 
     @Mock
     private StatusRepo statusRepo;
@@ -45,7 +45,7 @@ class StatusServiceTest {
         when(statusRepo.saveAndFlush(any(Status.class))).thenReturn(status);
 
         // When
-        Status result = statusService.createNewStatus(statusType);
+        Status result = statusServiceImp.createNewStatus(statusType);
 
         // Then
         assertNotNull(result);
@@ -57,7 +57,7 @@ class StatusServiceTest {
         when(statusRepo.findAll()).thenReturn(List.of(status));
 
         // When
-        List<Status> statuses = statusService.getAllStatuses();
+        List<Status> statuses = statusServiceImp.getAllStatuses();
 
         // Then
         assertNotNull(statuses);
@@ -71,7 +71,7 @@ class StatusServiceTest {
         when(statusRepo.saveAndFlush(any(Status.class))).thenReturn(status);
 
         // When
-        Status updatedStatus = statusService.updateStatus(1L, newType);
+        Status updatedStatus = statusServiceImp.updateStatus(1L, newType);
 
         // Then
         assertNotNull(updatedStatus);
@@ -84,7 +84,7 @@ class StatusServiceTest {
         when(statusRepo.findById(1L)).thenReturn(Optional.of(status));
 
         // When
-        statusService.deleteStatus(1L);
+        statusServiceImp.deleteStatus(1L);
 
         // Then
         verify(statusRepo, times(1)).findById(1L);

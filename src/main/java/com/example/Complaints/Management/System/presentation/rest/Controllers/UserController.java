@@ -5,7 +5,7 @@ import com.example.Complaints.Management.System.core.application.dto.CompStatusD
 import com.example.Complaints.Management.System.core.application.dto.UserDto;
 import com.example.Complaints.Management.System.core.application.services.CompService;
 import com.example.Complaints.Management.System.core.domain.entities.Status;
-import com.example.Complaints.Management.System.core.domain.services.StatusService;
+import com.example.Complaints.Management.System.core.domain.services.StatusServiceImp;
 import com.example.Complaints.Management.System.core.domain.services.UserService;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
@@ -25,7 +25,7 @@ public class UserController {
     private CompService compService;
 
     @Autowired
-    private StatusService statusService;
+    private StatusServiceImp statusServiceImp;
 //    @PostMapping("/sign-up")
 //    public UserDto registerUser(@Valid @RequestBody UserDto userDto){
 //        return userService.registerUser(userDto);
@@ -85,7 +85,7 @@ public class UserController {
     }
     @GetMapping("/all-statuses")
     public List<Status> getPreDefinedStatuses(){
-        return statusService.getAllStatuses();
+        return statusServiceImp.getAllStatuses();
     }
 
 }
