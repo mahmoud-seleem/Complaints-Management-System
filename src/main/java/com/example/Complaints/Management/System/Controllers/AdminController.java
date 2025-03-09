@@ -87,7 +87,7 @@ public class AdminController {
             @RequestParam(required = false) String status) throws IllegalAccessException {
         return compService.getUserPrevComplaints(userId,cursor,size,status,false);
     }
-    @GetMapping("/complaints/admin/{userId}/next")
+    @GetMapping("/complaints/{userId}/next")
     public List<CompDto> getAdminNextComplaints(
             @PathVariable Long userId,
             @RequestParam(required = false) String cursor,
@@ -96,7 +96,7 @@ public class AdminController {
         return compService.getUserNextComplaints(userId,cursor,size,status,true);
     }
 
-    @GetMapping("/complaints/admin/{userId}/prev")
+    @GetMapping("/complaints/{userId}/prev")
     public List<CompDto> getAdminPrevComplaints(
             @PathVariable Long userId,
             @RequestParam(required = false) String cursor,
