@@ -1,8 +1,8 @@
 package com.example.Complaints.Management.System.services;
 
 import com.example.Complaints.Management.System.core.application.dto.UserDto;
+import com.example.Complaints.Management.System.core.application.services.UserService;
 import com.example.Complaints.Management.System.core.domain.entities.User;
-import com.example.Complaints.Management.System.core.domain.services.UserService;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.UserRepo;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.ValidationException;

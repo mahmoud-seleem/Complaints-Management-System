@@ -1,7 +1,7 @@
 package com.example.Complaints.Management.System.services;
 
+import com.example.Complaints.Management.System.core.application.services.StatusService;
 import com.example.Complaints.Management.System.core.domain.entities.Status;
-import com.example.Complaints.Management.System.core.domain.services.StatusServiceImp;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.StatusRepo;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 class StatusServiceImpTest {
 
     @InjectMocks
-    private StatusServiceImp statusServiceImp;
+    private StatusService statusService;
 
     @Mock
     private StatusRepo statusRepo;
@@ -45,7 +45,7 @@ class StatusServiceImpTest {
         when(statusRepo.saveAndFlush(any(Status.class))).thenReturn(status);
 
         // When
-        Status result = statusServiceImp.createNewStatus(statusType);
+        Status result = statusService.createNewStatus(statusType);
 
         // Then
         assertNotNull(result);
@@ -57,7 +57,7 @@ class StatusServiceImpTest {
         when(statusRepo.findAll()).thenReturn(List.of(status));
 
         // When
-        List<Status> statuses = statusServiceImp.getAllStatuses();
+        List<Status> statuses = statusService.getAllStatuses();
 
         // Then
         assertNotNull(statuses);
@@ -71,7 +71,7 @@ class StatusServiceImpTest {
         when(statusRepo.saveAndFlush(any(Status.class))).thenReturn(status);
 
         // When
-        Status updatedStatus = statusServiceImp.updateStatus(1L, newType);
+        Status updatedStatus = statusService.updateStatus(1L, newType);
 
         // Then
         assertNotNull(updatedStatus);
@@ -84,7 +84,7 @@ class StatusServiceImpTest {
         when(statusRepo.findById(1L)).thenReturn(Optional.of(status));
 
         // When
-        statusServiceImp.deleteStatus(1L);
+        statusService.deleteStatus(1L);
 
         // Then
         verify(statusRepo, times(1)).findById(1L);

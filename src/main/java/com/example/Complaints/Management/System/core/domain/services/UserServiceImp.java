@@ -1,6 +1,7 @@
 package com.example.Complaints.Management.System.core.domain.services;
 
 import com.example.Complaints.Management.System.core.application.dto.UserDto;
+import com.example.Complaints.Management.System.core.application.services.UserService;
 import com.example.Complaints.Management.System.core.domain.entities.User;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.UserRepo;
 import com.example.Complaints.Management.System.shared.Security.SecurityUtils;
@@ -19,12 +20,12 @@ import java.util.NoSuchElementException;
 
 @Service
 @Transactional
-public class UserService {
+public class UserServiceImp implements UserService {
 
-    public UserService() {
+    public UserServiceImp() {
     }
 
-    public UserService(UserRepo userRepo) {
+    public UserServiceImp(UserRepo userRepo) {
         this.userRepo = userRepo;
     }
 

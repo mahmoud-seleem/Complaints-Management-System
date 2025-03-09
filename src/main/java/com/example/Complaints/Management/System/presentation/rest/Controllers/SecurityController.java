@@ -2,9 +2,9 @@ package com.example.Complaints.Management.System.presentation.rest.Controllers;
 
 import com.example.Complaints.Management.System.core.application.dto.AdminDto;
 import com.example.Complaints.Management.System.core.application.dto.UserDto;
+import com.example.Complaints.Management.System.core.application.services.UserService;
 import com.example.Complaints.Management.System.shared.Security.JWTUtils;
 import com.example.Complaints.Management.System.core.domain.services.AdminServiceImp;
-import com.example.Complaints.Management.System.core.domain.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;

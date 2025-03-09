@@ -1,5 +1,6 @@
 package com.example.Complaints.Management.System.core.domain.services;
 
+import com.example.Complaints.Management.System.core.application.services.StatusService;
 import com.example.Complaints.Management.System.core.domain.entities.Status;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.StatusRepo;
 import jakarta.persistence.EntityManager;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class StatusServiceImp {
+public class StatusServiceImp implements StatusService {
 
     @Autowired
     private StatusRepo statusRepo;
