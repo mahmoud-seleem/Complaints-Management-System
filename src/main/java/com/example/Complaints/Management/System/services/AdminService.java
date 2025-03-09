@@ -34,8 +34,8 @@ public class AdminService {
     @Transactional
     public AdminDto registerAdmin(AdminDto adminDto){
         // validation logic on the DTO object to be implemented here
-        Admin registeredAdmin = adminRepo.save(populateAdmin(adminDto));
-        entityManager.refresh(registeredAdmin);
+        Admin registeredAdmin = adminRepo.saveAndFlush(populateAdmin(adminDto));
+//        entityManager.refresh(registeredAdmin);
         adminDto.setUserId(registeredAdmin.getUserId());
         return adminDto;
     }
