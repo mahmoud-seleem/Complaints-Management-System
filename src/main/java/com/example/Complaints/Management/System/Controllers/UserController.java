@@ -42,7 +42,7 @@ public class UserController {
     public UserDto deleteUser(@Valid @PathVariable("id") Long id){
         return userService.deleteUser(id);
     }
-    @PostMapping("/new")
+    @PostMapping("/new-complaint")
     public CompDto createNewComplaint(@RequestBody CompDto compDto) throws IllegalAccessException {
         return  compService.createNewComplaint(compDto);
     }
@@ -58,7 +58,7 @@ public class UserController {
     public List<CompStatusDto> getComplaintHistory(@PathVariable("id") Long id ) throws IllegalAccessException {
         return  compService.getComplaintHistory(id);
     }
-    @GetMapping("/complaints/user/{id}")
+    @GetMapping("/complaints/{id}")
     public List<CompDto> getAllUserComplaints(@PathVariable("id") Long id ) throws IllegalAccessException {
         return  compService.getAllUserComplaints(id);
     }
@@ -66,7 +66,7 @@ public class UserController {
     public List<CompDto> deleteUserComplaint(@PathParam("userId") Long userId, @PathParam("compId") Long compId) throws IllegalAccessException {
         return  compService.deleteComplaint(userId,compId);
     }
-    @GetMapping("/complaints/user/{userId}/next")
+    @GetMapping("/complaints/{userId}/next")
     public List<CompDto> getUserNextComplaints(
             @PathVariable Long userId,
             @RequestParam(required = false) String cursor,
@@ -75,7 +75,7 @@ public class UserController {
         return compService.getUserNextComplaints(userId,cursor,size,status,false);
     }
 
-    @GetMapping("/complaints/user/{userId}/prev")
+    @GetMapping("/complaints/{userId}/prev")
     public List<CompDto> getUserPrevComplaints(
             @PathVariable Long userId,
             @RequestParam(required = false) String cursor,

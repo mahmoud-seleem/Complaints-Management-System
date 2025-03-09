@@ -40,42 +40,45 @@ public class SecurityController {
 
     @PostMapping("/admin/sign-up")
     public AdminDto registerAdmin(@Valid @RequestBody AdminDto adminDto){
-        return adminService.registerAdmin(adminDto);
+        String password = adminDto.getPassword();
+        adminDto = adminService.registerAdmin(adminDto);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(adminDto.getUserName(), password));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtUtils.generateToken(adminDto.getUserName());
+        adminDto.setToken(token);
+        return adminDto;
     }
     @PostMapping("/user/sign-up")
     public UserDto registerUser(@Valid @RequestBody UserDto userDto){
-        return userService.registerUser(userDto);
-    }
-//    @GetMapping("/login")
-//    public ResponseEntity<String> login() {
-//        return ResponseEntity.ok("Please log in using the login form.");
-//    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        request.getSession().invalidate(); // Destroy session
-        SecurityContextHolder.clearContext(); // Clear security context
-        return ResponseEntity.ok("Logged out successfully.");
-    }
+        String password = userDto.getPassword();
+        userDto = userService.registerUser(userDto);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userDto.getUserName(), password));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtUtils.generateToken(userDto.getUserName());
+        userDto.setToken(token);
+        return userDto;
+        }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@PathParam("username") String username, @PathParam("password") String password) {
         try {
             System.out.println(username);
             System.out.println(password );
-            // Authenticate user
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
-            );
-
-            // Store authentication in SecurityContext
+                    new UsernamePasswordAuthenticationToken(username, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            String token = jwtUtils.generateToken(password);
-            // Return a welcome message
-            return ResponseEntity.ok("Welcome, " + username + "! You are now logged in.\n\n "+token);
+            String token = jwtUtils.generateToken(username);
+            return ResponseEntity.ok("JWT-TOKEN="+token);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
+//    @PostMapping("/logout")
+//    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+//        request.getSession().invalidate(); // Destroy session
+//        SecurityContextHolder.clearContext(); // Clear security context
+//        return ResponseEntity.ok("Logged out successfully.");
+//    }
 }

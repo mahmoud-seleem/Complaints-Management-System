@@ -16,9 +16,11 @@ public class AdminDto {
 
     private String email;
 
-    private int age;
+    private Integer age;
 
     private List<String> phoneNumbers = null;
+
+    private String token;
 
     public AdminDto() {
     }
@@ -76,5 +78,13 @@ public class AdminDto {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

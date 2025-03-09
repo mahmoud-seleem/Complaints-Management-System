@@ -15,9 +15,11 @@ public class UserDto {
 
     private String email;
 
-    private int age;
+    private Integer age;
 
     private List<String> phoneNumbers = null;
+
+    private String token;
 
     public UserDto() {
     }
@@ -28,6 +30,7 @@ public class UserDto {
         this.email = email;
         this.phoneNumbers = phoneNumbers;
     }
+
 
     public String getUserName() {
         return userName;
@@ -75,5 +78,13 @@ public class UserDto {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

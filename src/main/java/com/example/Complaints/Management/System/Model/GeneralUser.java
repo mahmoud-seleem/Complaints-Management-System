@@ -29,7 +29,7 @@ public class GeneralUser {
     private String email = "user@gmail.com";
 
     @Column(name = "age")
-    private int age = 24;
+    private Integer age = 24;
 
 //    @Enumerated(EnumType.STRING)
     //@Column(name = "role",insertable=false, updatable=false)
