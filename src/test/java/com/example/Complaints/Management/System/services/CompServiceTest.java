@@ -6,6 +6,7 @@ import com.example.Complaints.Management.System.core.domain.entities.Admin;
 import com.example.Complaints.Management.System.core.domain.entities.Complaint;
 import com.example.Complaints.Management.System.core.domain.entities.Status;
 import com.example.Complaints.Management.System.core.domain.entities.User;
+import com.example.Complaints.Management.System.core.domain.services.CompServiceImp;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.ValidationException;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.*;
 class CompServiceTest {
 
     @InjectMocks
-    private CompService compService;
+    private CompServiceImp compService;
 
     @Mock
     private ComplaintRepo complaintRepo;

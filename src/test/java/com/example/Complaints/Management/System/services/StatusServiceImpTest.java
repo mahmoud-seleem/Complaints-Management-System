@@ -2,6 +2,7 @@ package com.example.Complaints.Management.System.services;
 
 import com.example.Complaints.Management.System.core.application.services.StatusService;
 import com.example.Complaints.Management.System.core.domain.entities.Status;
+import com.example.Complaints.Management.System.core.domain.services.StatusServiceImp;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.StatusRepo;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.*;
 class StatusServiceImpTest {
 
     @InjectMocks
-    private StatusService statusService;
+    private StatusServiceImp statusService;
 
     @Mock
     private StatusRepo statusRepo;

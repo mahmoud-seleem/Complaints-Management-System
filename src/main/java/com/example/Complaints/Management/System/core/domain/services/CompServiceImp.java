@@ -5,6 +5,7 @@ import com.example.Complaints.Management.System.core.application.dto.CompStatusD
 import com.example.Complaints.Management.System.core.application.services.CompService;
 import com.example.Complaints.Management.System.core.domain.entities.*;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.*;
+import com.example.Complaints.Management.System.shared.Utils.Validation;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -37,6 +38,9 @@ public class CompServiceImp implements CompService {
 
     @Autowired
     private StatusRepo statusRepo;
+
+    @Autowired
+    private Validation validator;
 
     private static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
@@ -186,7 +190,7 @@ public class CompServiceImp implements CompService {
             throw new ValidationException(
                     "Only Assigned Admin Can Change This Complaint Status");
         }
-        Admin admin = isAdminExist(adminId);
+        Admin admin = validator.isAdminExist(adminId);
         Status newstatus = isValidStatusType(newType);
         if (newType.equals(complaint.getCurrentStatus())){
             return populateComplaintDto(
@@ -202,12 +206,12 @@ public class CompServiceImp implements CompService {
     @Transactional
     public CompDto changeComplaintAssignee(Long adminId,Long compId,Long newAssignee) throws IllegalAccessException {
         Complaint complaint = isComplaintExist(compId);
-        Admin admin = isAdminExist(adminId);
+        Admin admin = validator.isAdminExist(adminId);
         if (adminId != complaint.getAdmin().getUserId()){
             throw new ValidationException(
                     "Only Assigned Admin Can set new Assignee for this Complaint");
         }
-        Admin assignee = isAdminExist(newAssignee);
+        Admin assignee = validator.isAdminExist(newAssignee);
         complaint.setAdmin(assignee);
         return populateComplaintDto(
                 complaintRepo.saveAndFlush(complaint),
@@ -234,7 +238,7 @@ public class CompServiceImp implements CompService {
             isValidStatusType(status);
         }
         if(isAdmin == true){
-            isAdminExist(userId);
+            validator.isAdminExist(userId);
         }else {
             isUserExist(userId);
         }
@@ -276,7 +280,7 @@ public class CompServiceImp implements CompService {
                 isValidStatusType(status);
             }
             if(isAdmin == true){
-                isAdminExist(userId);
+                validator.isAdminExist(userId);
             }else {
                 isUserExist(userId);
             }
@@ -314,13 +318,6 @@ public class CompServiceImp implements CompService {
     }
 
 
-    private Admin isAdminExist(Long id){
-        try {
-            return adminRepo.findById(id).get();
-        } catch (Exception e) {
-            throw new ValidationException("Admin with id = " + id +" Doesn't Exist !!");
-        }
-    }
     private User isUserExist(Long id){
         try {
             return userRepo.findById(id).get();

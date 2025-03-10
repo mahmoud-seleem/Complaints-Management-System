@@ -34,9 +34,10 @@ public class AdminServiceImp implements AdminService {
 
     @Transactional
     public AdminDto registerAdmin(AdminDto adminDto){
+
         // validation logic on the DTO object to be implemented here
+        validateRegistrationData(adminDto);
         Admin registeredAdmin = adminRepo.saveAndFlush(populateAdmin(adminDto));
-//        entityManager.refresh(registeredAdmin);
         adminDto.setUserId(registeredAdmin.getUserId());
         return adminDto;
     }
