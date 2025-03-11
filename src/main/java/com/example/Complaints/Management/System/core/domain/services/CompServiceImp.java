@@ -40,12 +40,13 @@ public class CompServiceImp implements CompService {
     private StatusRepo statusRepo;
 
     @Autowired
-    private Validation validator;
+    private Validation validation;
 
     private static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
     @Transactional
     public CompDto createNewComplaint(CompDto compDto) throws IllegalAccessException {
+        validation.validateNewComplaintData(compDto);
         Complaint complaint = new Complaint();
         populateComplaint(complaint, compDto);
         complaint.setCreationDate(new Date());
@@ -190,7 +191,7 @@ public class CompServiceImp implements CompService {
             throw new ValidationException(
                     "Only Assigned Admin Can Change This Complaint Status");
         }
-        Admin admin = validator.isAdminExist(adminId);
+        Admin admin = validation.isAdminExist(adminId);
         Status newstatus = isValidStatusType(newType);
         if (newType.equals(complaint.getCurrentStatus())){
             return populateComplaintDto(
@@ -206,12 +207,12 @@ public class CompServiceImp implements CompService {
     @Transactional
     public CompDto changeComplaintAssignee(Long adminId,Long compId,Long newAssignee) throws IllegalAccessException {
         Complaint complaint = isComplaintExist(compId);
-        Admin admin = validator.isAdminExist(adminId);
+        Admin admin = validation.isAdminExist(adminId);
         if (adminId != complaint.getAdmin().getUserId()){
             throw new ValidationException(
                     "Only Assigned Admin Can set new Assignee for this Complaint");
         }
-        Admin assignee = validator.isAdminExist(newAssignee);
+        Admin assignee = validation.isAdminExist(newAssignee);
         complaint.setAdmin(assignee);
         return populateComplaintDto(
                 complaintRepo.saveAndFlush(complaint),
@@ -238,7 +239,7 @@ public class CompServiceImp implements CompService {
             isValidStatusType(status);
         }
         if(isAdmin == true){
-            validator.isAdminExist(userId);
+            validation.isAdminExist(userId);
         }else {
             isUserExist(userId);
         }
@@ -280,7 +281,7 @@ public class CompServiceImp implements CompService {
                 isValidStatusType(status);
             }
             if(isAdmin == true){
-                validator.isAdminExist(userId);
+                validation.isAdminExist(userId);
             }else {
                 isUserExist(userId);
             }

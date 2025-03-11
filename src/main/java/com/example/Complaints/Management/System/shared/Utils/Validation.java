@@ -1,6 +1,7 @@
 package com.example.Complaints.Management.System.shared.Utils;
 
 import com.example.Complaints.Management.System.core.application.dto.AdminDto;
+import com.example.Complaints.Management.System.core.application.dto.CompDto;
 import com.example.Complaints.Management.System.core.application.dto.GeneralUserDto;
 import com.example.Complaints.Management.System.core.domain.entities.Admin;
 import com.example.Complaints.Management.System.core.domain.entities.GeneralUser;
@@ -234,4 +235,27 @@ public class Validation {
                 type);
     }
 
+
+    public void validateNewComplaintData(CompDto dto){
+        validateNewComplaintRequiredFields(dto);
+        isUserExist(dto.getOwnerId());
+        validComplaintDataLength(dto.getTitle(),"title");
+        validComplaintDataLength(dto.getDescription(),"description");
+        validComplaintDataLength(dto.getCategory(),"category");
+    }
+    public void validComplaintDataLength(String data,String name){
+        if (data.isEmpty()){
+            throw new CustomValidationException(
+                    name +" Can't be empty",
+                    name,
+                    data
+            );
+        }
+    }
+    public void validateNewComplaintRequiredFields(CompDto dto) {
+        isNotNull(dto.getOwnerId(),"ownerId");
+        isNotNull(dto.getTitle(),"title");
+        isNotNull(dto.getDescription(),"description");
+        isNotNull(dto.getCategory(),"category");
+    }
 }

@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)  // Excludes null values
 public class CompDto {
     private Long compId;
-    private Long ownerId;
     private Long AssigneeId;
+    private Long ownerId;
     private String title;
     private String description;
-    private String creationDate;
     private String category;
+    private String creationDate;
     private String currentStatus;
 
     public CompDto(Long compId, Long ownerId, Long assigneeId, String title, String description, String creationDate, String category, String currentStatus) {
