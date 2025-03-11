@@ -4,8 +4,10 @@ import com.example.Complaints.Management.System.core.application.dto.AdminDto;
 import com.example.Complaints.Management.System.core.application.dto.GeneralUserDto;
 import com.example.Complaints.Management.System.core.domain.entities.Admin;
 import com.example.Complaints.Management.System.core.domain.entities.GeneralUser;
+import com.example.Complaints.Management.System.core.domain.entities.Status;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.AdminRepo;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.GeneralUserRepo;
+import com.example.Complaints.Management.System.core.infrastructure.Repository.StatusRepo;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +25,9 @@ public class Validation {
 
     @Autowired
     private GeneralUserRepo generalUserRepo;
+
+    Autowired
+    private StatusRepo statusRepo;
 
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
 
@@ -140,7 +145,31 @@ public class Validation {
         try {
             return adminRepo.findById(id).get();
         } catch (Exception e) {
-            throw new ValidationException("Admin with id = " + id + " Doesn't Exist !!");
+            throw new CustomValidationException(
+                    "Admin with this id Doesn't Exist !!",
+                    "id",
+                    id);
         }
     }
+
+    public boolean isStatusExist(String type){
+        Status status = statusRepo.findByStatusType(type);
+        return (status != null);
+    }
+    public void validateStatusIsExist(String type){
+        if (isStatusExist(type)){return;}
+        throw new CustomValidationException(
+                "Status with this type Doesn't Exist !",
+                "statusType",
+                type);
+    }
+
+    public void validateStatusIsNotExist(String type){
+        if (!isStatusExist(type)){return;}
+        throw new CustomValidationException(
+                "Status with this type already Exist !",
+                "statusType",
+                type);
+    }
+
 }

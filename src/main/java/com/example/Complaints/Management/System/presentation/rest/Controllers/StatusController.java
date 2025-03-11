@@ -29,7 +29,6 @@ public class StatusController {
     public Status updateStatusType(@PathParam("id") Long id , @PathParam("newType") String newType){
         return statusService.updateStatus(id,newType);
     }
-
     @DeleteMapping("/{id}")
     public void deleteStatus(@PathVariable("id") Long id){
         statusService.deleteStatus(id);

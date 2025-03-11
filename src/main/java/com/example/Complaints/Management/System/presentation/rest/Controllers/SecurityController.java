@@ -48,7 +48,7 @@ public class SecurityController {
         return adminDto;
     }
     @PostMapping("/user/sign-up")
-    public UserDto registerUser(@Valid @RequestBody UserDto userDto){
+    public UserDto registerUser(@Valid @RequestBody UserDto userDto) throws NoSuchFieldException, IllegalAccessException {
         String password = userDto.getPassword();
         userDto = userService.registerUser(userDto);
         Authentication authentication = authenticationManager.authenticate(
@@ -68,7 +68,7 @@ public class SecurityController {
                     new UsernamePasswordAuthenticationToken(username, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = jwtUtils.generateToken(username);
-            return ResponseEntity.ok("JWT-TOKEN="+token);
+            return ResponseEntity.ok("JWT-TOKEN = " +token);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
