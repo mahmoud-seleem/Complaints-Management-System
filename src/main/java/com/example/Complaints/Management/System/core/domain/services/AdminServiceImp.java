@@ -43,6 +43,16 @@ private Validation validation;
         adminDto.setUserId(registeredAdmin.getUserId());
         return adminDto;
     }
+
+    @Transactional
+    public AdminDto updateAdmin(AdminDto adminDto) throws Exception {
+        // validation to all existed and required fields
+        validation.validateGeneralUserUpdateData(adminDto);
+        Admin admin = validation.isAdminExist(adminDto.getUserId());
+        admin  = updateAdminData(admin ,adminDto);
+        Admin updatedAdmin = adminRepo.saveAndFlush(admin );
+        return populateAdminDto(updatedAdmin,adminDto);
+    }
     private Admin populateAdmin(AdminDto adminDto){
         Admin admin = new Admin();
         admin.setUserName(adminDto.getUserName());
@@ -57,20 +67,6 @@ private Validation validation;
         }
         return admin;
     }
-
-    @Transactional
-    public AdminDto updateAdmin(AdminDto adminDto) throws Exception {
-        // validation to all existed and required fields
-        Admin admin ;
-        try{
-            admin =  adminRepo.findById(adminDto.getUserId()).get();
-        }catch (Exception e){
-            throw new ValidationException("User not exist");
-        }
-        admin  = updateAdminData(admin ,adminDto);
-        Admin updatedAdmin = adminRepo.saveAndFlush(admin );
-        return populateAdminDto(updatedAdmin,adminDto);
-    }
     private Admin updateAdminData(Admin admin , AdminDto adminDto) throws Exception {
         Class<?> dtoClass = adminDto.getClass();
         Class<?> entityClass = admin .getClass();
@@ -82,8 +78,7 @@ private Validation validation;
             if (value != null) { // Only map non-null values
                 Field entityField = getField(entityClass, dtoField.getName());
                 if (entityField != null &&
-                        !entityField.getName().equals("userId") &&
-                        !entityField.getName().equals("phoneNumbers")){
+                        !entityField.getName().equals("userId")){
                     entityField.setAccessible(true);
                     entityField.set(admin , value); // Set value in entity
                 }

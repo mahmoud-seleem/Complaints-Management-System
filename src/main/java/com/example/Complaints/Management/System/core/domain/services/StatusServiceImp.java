@@ -42,6 +42,7 @@ public class StatusServiceImp implements StatusService {
 
     @Transactional
     public Status updateStatus(Long id,String newType){
+        validation.validateStatusIsNotExist(newType);
         Status status;
         try{
             status = statusRepo.findById(id).get();

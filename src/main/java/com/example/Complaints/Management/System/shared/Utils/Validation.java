@@ -26,39 +26,66 @@ public class Validation {
     @Autowired
     private GeneralUserRepo generalUserRepo;
 
-    Autowired
+    @Autowired
     private StatusRepo statusRepo;
 
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
 
     public void validateGeneralUserRegistrationData(GeneralUserDto dto) throws NoSuchFieldException, IllegalAccessException {
         ensureGeneralUserDoesNotExist(dto.getUserName());
-        ensureFieldIsNull(AdminDto.class, dto, "userId");
-        ensureFieldIsNull(AdminDto.class, dto, "token");
+        ensureFieldIsNull(GeneralUserDto.class, dto, "userId");
+        ensureFieldIsNull(GeneralUserDto.class, dto, "token");
         validateGeneralUserRequiredFieldsAreNotNull(dto);
-        validateUserNameAndPasswordAreValid(dto);
+        validateUserNameIsValid(dto.getUserName());
+        validatePasswordIsValid(dto.getPassword());
         validateEmailIsValid(dto.getEmail());
         validateAge(dto.getAge());
         // validation for the phone numbers
         validatePhoneNumbers(dto.getPhoneNumbers());
     }
 
+    public void validateGeneralUserUpdateData(GeneralUserDto dto) throws NoSuchFieldException, IllegalAccessException {
+        isGeneralUserExist(dto.getUserId());
+        if (dto.getUserName() != null){
+            throw new CustomValidationException(
+                    "UserName can't be updated once created,Please remove it !",
+                    "userName",
+                    dto.getUserName());
+        }
+        validateOptionalUpdatableFields(dto);
+    }
+
+    public void validateOptionalUpdatableFields(GeneralUserDto dto){
+        if (dto.getPassword() != null) {
+            validatePasswordIsValid(dto.getPassword());
+        }
+        if (dto.getEmail() != null){
+            validateEmailIsValid(dto.getEmail());
+        }
+        if (dto.getAge() != null){
+            validateAge(dto.getAge());
+        }
+        if (dto.getPhoneNumbers() != null){
+            validatePhoneNumbers(dto.getPhoneNumbers());
+        }
+    }
     public void validateGeneralUserRequiredFieldsAreNotNull(GeneralUserDto dto) {
         isNotNull(dto.getUserName(), "userName");
         isNotNull(dto.getPassword(), "password");
         isNotNull(dto.getEmail(), "email");
         isNotNull(dto.getAge(), "age");
-        isNotNull(dto.getPhoneNumbers(),"phoneNumbers");
+        isNotNull(dto.getPhoneNumbers(), "phoneNumbers");
     }
 
-    public void validatePhoneNumbers(List<String> numbers){
-        for (String number : numbers){
+    public void validatePhoneNumbers(List<String> numbers) {
+        for (String number : numbers) {
             validatePhoneNumber(number);
         }
     }
-    public void validatePhoneNumber(String phoneNumber){
+
+    public void validatePhoneNumber(String phoneNumber) {
         // assumption that the phone numbers are all from egypt for now
-        if (phoneNumber.startsWith("+20") && phoneNumber.length() == 13){
+        if (phoneNumber.startsWith("+20") && phoneNumber.length() == 13) {
             return;
         }
         throw new CustomValidationException(
@@ -67,6 +94,7 @@ public class Validation {
                 phoneNumber
         );
     }
+
     public void validateAge(int age) {
         if (age <= 16) {
             throw new CustomValidationException(
@@ -95,7 +123,7 @@ public class Validation {
     }
 
     public void ensureFieldIsNull(Class clazz, Object object, String name) throws NoSuchFieldException, IllegalAccessException {
-        Field field = getField(clazz,name);
+        Field field = getField(clazz, name);
         field.setAccessible(true);
         if (field.get(object) != null) {
             field.set(object, null);
@@ -103,7 +131,7 @@ public class Validation {
     }
 
     private static Field getField(Class<?> clazz, String fieldName) {
-        while(clazz != null) {
+        while (clazz != null) {
             try {
                 return clazz.getDeclaredField(fieldName);
             } catch (NoSuchFieldException e) {
@@ -113,23 +141,24 @@ public class Validation {
         return null; // Field not found
     }
 
-    public void validateUserNameAndPasswordAreValid(GeneralUserDto dto) {
-        if (!dto.getUserName().isEmpty()) {
-            if (dto.getPassword().length() >= 5) {
-            } else {
-                throw new CustomValidationException(
-                        "password should be more than 5 chars !!",
-                        "password",
-                        dto.getPassword());
-            }
-        } else {
-            throw new CustomValidationException(
-                    "userName should not be empty !",
-                    "userName",
-                    dto.getUserName());
+    public void validateUserNameIsValid(String userName) {
+        if (!userName.isEmpty()) {
+            return;
         }
+        throw new CustomValidationException(
+                "userName should not be empty !",
+                "userName",
+                userName);
     }
-
+    public void validatePasswordIsValid(String password) {
+        if (password.length() >= 5) {
+            return;
+        }
+        throw new CustomValidationException(
+                "Password should not be less than 5 chars !",
+                "password",
+                password);
+    }
 
     public void ensureGeneralUserDoesNotExist(String userName) {
         GeneralUser user = generalUserRepo.findByUserName(userName);
@@ -138,6 +167,17 @@ public class Validation {
                     "User with this userName Already Exists !",
                     "userName",
                     userName);
+        }
+    }
+
+    public GeneralUser isGeneralUserExist(Long id) {
+        try {
+            return generalUserRepo.findById(id).get();
+        } catch (Exception e) {
+            throw new CustomValidationException(
+                    "User with this id Doesn't Exist !!",
+                    "id",
+                    id);
         }
     }
 
@@ -152,20 +192,25 @@ public class Validation {
         }
     }
 
-    public boolean isStatusExist(String type){
+    public boolean isStatusExist(String type) {
         Status status = statusRepo.findByStatusType(type);
         return (status != null);
     }
-    public void validateStatusIsExist(String type){
-        if (isStatusExist(type)){return;}
+
+    public void validateStatusIsExist(String type) {
+        if (isStatusExist(type)) {
+            return;
+        }
         throw new CustomValidationException(
                 "Status with this type Doesn't Exist !",
                 "statusType",
                 type);
     }
 
-    public void validateStatusIsNotExist(String type){
-        if (!isStatusExist(type)){return;}
+    public void validateStatusIsNotExist(String type) {
+        if (!isStatusExist(type)) {
+            return;
+        }
         throw new CustomValidationException(
                 "Status with this type already Exist !",
                 "statusType",
