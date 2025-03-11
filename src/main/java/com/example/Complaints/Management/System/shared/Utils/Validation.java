@@ -1,6 +1,5 @@
 package com.example.Complaints.Management.System.shared.Utils;
 
-import com.example.Complaints.Management.System.core.application.dto.AdminDto;
 import com.example.Complaints.Management.System.core.application.dto.CompDto;
 import com.example.Complaints.Management.System.core.application.dto.GeneralUserDto;
 import com.example.Complaints.Management.System.core.domain.entities.Admin;
@@ -11,8 +10,9 @@ import com.example.Complaints.Management.System.core.infrastructure.Repository.A
 import com.example.Complaints.Management.System.core.infrastructure.Repository.GeneralUserRepo;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.StatusRepo;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.UserRepo;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -53,7 +53,7 @@ public class Validation {
 
     public void validateGeneralUserUpdateData(GeneralUserDto dto) throws NoSuchFieldException, IllegalAccessException {
         isGeneralUserExist(dto.getUserId());
-        if (dto.getUserName() != null){
+        if (dto.getUserName() != null) {
             throw new CustomValidationException(
                     "UserName can't be updated once created,Please remove it !",
                     "userName",
@@ -62,20 +62,21 @@ public class Validation {
         validateOptionalUpdatableFields(dto);
     }
 
-    public void validateOptionalUpdatableFields(GeneralUserDto dto){
+    public void validateOptionalUpdatableFields(GeneralUserDto dto) {
         if (dto.getPassword() != null) {
             validatePasswordIsValid(dto.getPassword());
         }
-        if (dto.getEmail() != null){
+        if (dto.getEmail() != null) {
             validateEmailIsValid(dto.getEmail());
         }
-        if (dto.getAge() != null){
+        if (dto.getAge() != null) {
             validateAge(dto.getAge());
         }
-        if (dto.getPhoneNumbers() != null){
+        if (dto.getPhoneNumbers() != null) {
             validatePhoneNumbers(dto.getPhoneNumbers());
         }
     }
+
     public void validateGeneralUserRequiredFieldsAreNotNull(GeneralUserDto dto) {
         isNotNull(dto.getUserName(), "userName");
         isNotNull(dto.getPassword(), "password");
@@ -157,6 +158,7 @@ public class Validation {
                 "userName",
                 userName);
     }
+
     public void validatePasswordIsValid(String password) {
         if (password.length() >= 5) {
             return;
@@ -236,26 +238,61 @@ public class Validation {
     }
 
 
-    public void validateNewComplaintData(CompDto dto){
+    public void validateNewComplaintData(CompDto dto) {
         validateNewComplaintRequiredFields(dto);
         isUserExist(dto.getOwnerId());
-        validComplaintDataLength(dto.getTitle(),"title");
-        validComplaintDataLength(dto.getDescription(),"description");
-        validComplaintDataLength(dto.getCategory(),"category");
+        isAllowedUser(dto.getOwnerId());
+        validComplaintDataLength(dto.getTitle(), "title");
+        validComplaintDataLength(dto.getDescription(), "description");
+        validComplaintDataLength(dto.getCategory(), "category");
     }
-    public void validComplaintDataLength(String data,String name){
-        if (data.isEmpty()){
+
+    public void validComplaintDataLength(String data, String name) {
+        if (data.isEmpty()) {
             throw new CustomValidationException(
-                    name +" Can't be empty",
+                    name + " Can't be empty",
                     name,
                     data
             );
         }
     }
+
     public void validateNewComplaintRequiredFields(CompDto dto) {
-        isNotNull(dto.getOwnerId(),"ownerId");
-        isNotNull(dto.getTitle(),"title");
-        isNotNull(dto.getDescription(),"description");
-        isNotNull(dto.getCategory(),"category");
+        isNotNull(dto.getOwnerId(), "ownerId");
+        isNotNull(dto.getTitle(), "title");
+        isNotNull(dto.getDescription(), "description");
+        isNotNull(dto.getCategory(), "category");
+    }
+
+    public void isAllowedAdmin(Long givenId) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = null;
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        }
+        Admin currentUser = adminRepo.findByUserName(userName);
+        if (currentUser.getUserId().longValue() != givenId.longValue()) {
+            throw new CustomValidationException(
+                    "Current Admin with id = " + currentUser.getUserId() + " is not = the given id value ",
+                    "admin/user/assignee Id",
+                    givenId
+            );
+        }
+    }
+
+    public void isAllowedUser(Long givenId) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = null;
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        }
+        User currentUser = userRepo.findByUserName(userName);
+        if (currentUser.getUserId().longValue() != givenId.longValue()) {
+            throw new CustomValidationException(
+                    "Current user with id = " + currentUser.getUserId() + " is not = the given id value ",
+                    "user/owner Id",
+                    givenId
+            );
+        }
     }
 }
