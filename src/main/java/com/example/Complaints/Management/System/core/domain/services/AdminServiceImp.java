@@ -50,7 +50,7 @@ public class AdminServiceImp implements AdminService {
         // validation to all existed and required fields
         validation.validateGeneralUserUpdateData(adminDto);
         Admin admin = validation.isAdminExist(adminDto.getUserId());
-        updateAdminData(admin, adminDto);
+        admin = updateAdminData(admin, adminDto);
         Admin updatedAdmin = adminRepo.saveAndFlush(admin);
         return populateAdminDto(updatedAdmin, adminDto);
     }
@@ -94,7 +94,7 @@ public class AdminServiceImp implements AdminService {
         Class<?> dtoClass = adminDto.getClass();
         Class<?> entityClass = admin.getClass();
 
-        for (Field dtoField : dtoClass.getDeclaredFields()) {
+        for (Field dtoField : getAllFields(dtoClass)) {
             dtoField.setAccessible(true);
             Object value = dtoField.get(adminDto); // Get DTO field value
 

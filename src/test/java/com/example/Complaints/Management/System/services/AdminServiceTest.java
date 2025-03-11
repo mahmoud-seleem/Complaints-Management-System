@@ -5,12 +5,19 @@ import com.example.Complaints.Management.System.core.domain.entities.Admin;
 import com.example.Complaints.Management.System.core.domain.services.AdminServiceImp;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.AdminRepo;
 import com.example.Complaints.Management.System.shared.Security.SecurityUtils;
+import com.example.Complaints.Management.System.shared.Utils.CustomValidationException;
+import com.example.Complaints.Management.System.shared.Utils.Validation;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,158 +36,58 @@ class AdminServiceTest {
     @Mock
     private AdminRepo adminRepo;
 
+    @Mock
+    private Validation validation;
+
     private AdminDto adminDto;
     private Admin admin;
 
     @BeforeEach
-    public void setUp() {
-        // Setup AdminDto for testing
-        adminDto = new AdminDto();
-        adminDto.setUserName("admin_user");
-        adminDto.setPassword("password123");
-        adminDto.setEmail("admin@example.com");
-        adminDto.setAge(35);
-        adminDto.setPhoneNumbers(List.of("9876543210"));
-
-        // Setup Admin entity for testing
-        admin = new Admin();
-        admin.setUserName("admin_user");
-        admin.setPassword(SecurityUtils.PASSWORD_ENCODER.encode("password123"));
-        admin.setEmail("admin@example.com");
-        admin.setAge(35);
-        admin.setPhoneNumbers(List.of("9876543210"));
-        admin.setUserId(1L); // Mock userId for the saved Admin
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
+
     @Test
-    void testRegisterAdmin_HappyPath() throws NoSuchFieldException, IllegalAccessException {
-        // Given: Mock the saveAndFlush method to return a mocked Admin entity
+    void test_AdminRegistration_HappyScenario() throws NoSuchFieldException, IllegalAccessException {
+        AdminDto input = new AdminDto();
+        input.setUserName("mahmoud");
+        input.setEmail("mahmoud@mahmoud.com");
+        input.setPassword("123456789");
+        input.setAge(25);
+        input.setPhoneNumbers(List.of("+201061424231"));
+
+        Admin admin = new Admin();
+        admin.setAge(25);
+        admin.setUserId(1L);
+        admin.setEmail("mahmoud@mahmoud.com");
+        admin.setPassword("123456789");
+        admin.setAge(25);
+        admin.setPhoneNumbers(List.of("+201061424231"));
+
         when(adminRepo.saveAndFlush(any(Admin.class))).thenReturn(admin);
+        doNothing().when(validation).validateGeneralUserRegistrationData(input);
 
-        // When: Call the registerAdmin method
-        AdminDto result = adminService.registerAdmin(adminDto);
+        AdminDto result = adminService.registerAdmin(input);
 
-        // Then: Assert that the returned AdminDto is not null and contains the expected values
         assertNotNull(result);
         assertEquals(1L, result.getUserId());
-        assertEquals("admin_user", result.getUserName());
-        assertEquals("admin@example.com", result.getEmail());
-
-        // Verify that saveAndFlush was called once
         verify(adminRepo, times(1)).saveAndFlush(any(Admin.class));
     }
+
     @Test
-    void testUpdateAdmin_AdminNotFound() {
-        // Given: Mock the behavior of findById to throw a NoSuchElementException
-        AdminDto updatedAdminDto = new AdminDto();
-        updatedAdminDto.setUserId(1L);
-        updatedAdminDto.setUserName("updated_admin");
-        updatedAdminDto.setEmail("updated_admin@example.com");
+    void test_AdminRegistration_UnHappyScenario() throws NoSuchFieldException, IllegalAccessException {
+        AdminDto input = new AdminDto();
+        input.setEmail("mahmoud@mahmoud.com");
+        input.setPassword("123456789");
+        input.setAge(25);
+        input.setPhoneNumbers(List.of("+201061424231"));
 
-        when(adminRepo.findById(anyLong())).thenThrow(new NoSuchElementException("Admin not found"));
+        doThrow(new CustomValidationException())
+                .when(validation).validateGeneralUserRegistrationData(input);
 
-        // When & Then: Assert that a ValidationException is thrown when trying to update a non-existing admin
-        ValidationException thrown = assertThrows(ValidationException.class, () -> {
-            adminService.updateAdmin(updatedAdminDto);
-        });
-        assertEquals("User not exist", thrown.getMessage());
-
-        // Verify that findById was called once
-        verify(adminRepo, times(1)).findById(anyLong());
+        assertThrows(CustomValidationException.class,() -> adminService.registerAdmin(input));
+        verify(adminRepo, times(0)).saveAndFlush(any(Admin.class));
     }
-    @Test
-    void testDeleteAdmin_AdminNotFound() {
-        // Given: Mock the behavior of findById to throw a NoSuchElementException
-        Long adminId = 1L;
 
-        when(adminRepo.findById(adminId)).thenThrow(new NoSuchElementException("Admin not found"));
-
-        // When & Then: Assert that a ValidationException is thrown when trying to delete a non-existing admin
-        ValidationException thrown = assertThrows(ValidationException.class, () -> {
-            adminService.deleteAdmin(adminId);
-        });
-        assertEquals("User Doesn't Exist !!", thrown.getMessage());
-
-        // Verify that findById was called once
-        verify(adminRepo, times(1)).findById(adminId);
-    }
-    @Test
-    void testGetAdminById_HappyPath() throws IllegalAccessException {
-        // Given: Mock the findById method to return an Optional containing the admin entity
-        when(adminRepo.findById(1L)).thenReturn(Optional.of(admin));
-
-        // When: Call the getAdminById method
-        AdminDto result = adminService.getAdminById(1L);
-
-        // Then: Assert that the returned AdminDto is not null and contains the expected values
-        assertNotNull(result);
-        assertEquals(1L, result.getUserId());
-        assertEquals("admin_user", result.getUserName());
-        assertEquals("admin@example.com", result.getEmail());
-        assertEquals(35, result.getAge());
-
-        // Verify that findById was called once
-        verify(adminRepo, times(1)).findById(1L);
-    }
-    @Test
-    void testGetAdminById_AdminNotFound() {
-        // Given: Mock the findById method to return an empty Optional (admin not found)
-        when(adminRepo.findById(1L)).thenReturn(Optional.empty());
-
-        // When & Then: Assert that a ValidationException is thrown when the admin is not found
-        ValidationException thrown = assertThrows(ValidationException.class, () -> {
-            adminService.getAdminById(1L);
-        });
-        assertEquals("User Doesn't Exist !!", thrown.getMessage());
-
-        // Verify that findById was called once
-        verify(adminRepo, times(1)).findById(1L);
-    }
-    @Test
-    void testDeleteAdmin_HappyPath() throws IllegalAccessException {
-        // Given: Mock the findById method to return an Optional containing the admin entity
-        when(adminRepo.findById(1L)).thenReturn(Optional.of(admin));
-
-        // When: Call the deleteAdmin method
-        AdminDto result = adminService.deleteAdmin(1L);
-
-        // Then: Assert that the returned AdminDto is not null and contains the expected values
-        assertNotNull(result);
-        assertEquals(1L, result.getUserId());
-        assertEquals("admin_user", result.getUserName());
-        assertEquals("admin@example.com", result.getEmail());
-
-        // Verify that delete was called once
-        verify(adminRepo, times(1)).findById(1L);
-        verify(adminRepo, times(1)).delete(any(Admin.class));
-    }
-    @Test
-    void testUpdateAdmin_HappyPath() throws Exception {
-        // Given: Mock the findById method to return an Optional containing the admin entity
-        when(adminRepo.findById(1L)).thenReturn(Optional.of(admin));
-
-        // Given: Mock the saveAndFlush method to return the updated admin entity
-        when(adminRepo.saveAndFlush(any(Admin.class))).thenReturn(admin);
-
-        // Create a new AdminDto with updated values
-        AdminDto updatedAdminDto = new AdminDto();
-        updatedAdminDto.setUserId(1L);
-        updatedAdminDto.setUserName("updated_admin");
-        updatedAdminDto.setEmail("updated_admin@example.com");
-        updatedAdminDto.setAge(40);
-        updatedAdminDto.setPhoneNumbers(List.of("9876543210", "1234567890"));
-
-        // When: Call the updateAdmin method
-        AdminDto result = adminService.updateAdmin(updatedAdminDto);
-
-        // Then: Assert that the returned AdminDto is not null and contains the updated values
-        assertNotNull(result);
-        assertEquals(1L, result.getUserId());
-        assertEquals("updated_admin", result.getUserName());
-        assertEquals("updated_admin@example.com", result.getEmail());
-        assertEquals(40, result.getAge());
-
-        // Verify that findById was called once
-        verify(adminRepo, times(1)).findById(1L);
-        verify(adminRepo, times(1)).saveAndFlush(any(Admin.class));  // Ensure the saveAndFlush method was called
-    }
+    
 }

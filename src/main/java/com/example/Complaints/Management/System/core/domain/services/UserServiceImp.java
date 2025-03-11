@@ -9,15 +9,12 @@ import com.example.Complaints.Management.System.shared.Utils.Validation;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -98,15 +95,14 @@ public class UserServiceImp implements UserService {
         Class<?> dtoClass = userDto.getClass();
         Class<?> entityClass = user.getClass();
 
-        for (Field dtoField : dtoClass.getDeclaredFields()) {
+        for (Field dtoField : getAllFields(dtoClass)) {
             dtoField.setAccessible(true);
             Object value = dtoField.get(userDto); // Get DTO field value
 
             if (value != null) { // Only map non-null values
                 Field entityField = getField(entityClass, dtoField.getName());
                 if (     entityField != null &&
-                        !entityField.getName().equals("userId") &&
-                        !entityField.getName().equals("phoneNumbers")){
+                        !entityField.getName().equals("userId")){
                         entityField.setAccessible(true);
                         entityField.set(user, value); // Set value in entity
                 }
