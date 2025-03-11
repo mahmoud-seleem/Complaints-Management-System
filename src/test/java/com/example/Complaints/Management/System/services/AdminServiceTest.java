@@ -104,7 +104,7 @@ class AdminServiceTest {
         verify(adminRepo, times(1)).findById(adminId);
     }
     @Test
-    void testGetAdminById_HappyPath() {
+    void testGetAdminById_HappyPath() throws IllegalAccessException {
         // Given: Mock the findById method to return an Optional containing the admin entity
         when(adminRepo.findById(1L)).thenReturn(Optional.of(admin));
 
@@ -136,7 +136,7 @@ class AdminServiceTest {
         verify(adminRepo, times(1)).findById(1L);
     }
     @Test
-    void testDeleteAdmin_HappyPath() {
+    void testDeleteAdmin_HappyPath() throws IllegalAccessException {
         // Given: Mock the findById method to return an Optional containing the admin entity
         when(adminRepo.findById(1L)).thenReturn(Optional.of(admin));
 

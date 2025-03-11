@@ -8,6 +8,7 @@ import com.example.Complaints.Management.System.shared.Security.SecurityUtils;
 import com.example.Complaints.Management.System.shared.Utils.Validation;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Temporal;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,8 @@ public class AdminServiceImp implements AdminService {
     @PersistenceContext
     private EntityManager entityManager;
 
-@Autowired
-private Validation validation;
+    @Autowired
+    private Validation validation;
 
     @Transactional
     public AdminDto registerAdmin(AdminDto adminDto) throws NoSuchFieldException, IllegalAccessException {
@@ -49,27 +50,49 @@ private Validation validation;
         // validation to all existed and required fields
         validation.validateGeneralUserUpdateData(adminDto);
         Admin admin = validation.isAdminExist(adminDto.getUserId());
-        admin  = updateAdminData(admin ,adminDto);
-        Admin updatedAdmin = adminRepo.saveAndFlush(admin );
-        return populateAdminDto(updatedAdmin,adminDto);
+        updateAdminData(admin, adminDto);
+        Admin updatedAdmin = adminRepo.saveAndFlush(admin);
+        return populateAdminDto(updatedAdmin, adminDto);
     }
-    private Admin populateAdmin(AdminDto adminDto){
+
+
+
+    @Transactional
+    public AdminDto getAdminById(Long id) throws IllegalAccessException {
+        Admin admin = validation.isAdminExist(id);
+        validation.isAllowedAdmin(id);
+        AdminDto adminDto = new AdminDto();
+        return populateAdminDto(admin, adminDto);
+    }
+
+    @Transactional
+    public AdminDto deleteAdmin(Long id) throws IllegalAccessException {
+        Admin admin = validation.isAdminExist(id);
+        validation.isAllowedAdmin(id);
+        AdminDto adminDto = new AdminDto();
+        populateAdminDto(admin, adminDto);
+        adminRepo.delete(admin);
+        return adminDto;
+    }
+
+    private Admin populateAdmin(AdminDto adminDto) {
         Admin admin = new Admin();
         admin.setUserName(adminDto.getUserName());
         admin.setPassword(SecurityUtils.PASSWORD_ENCODER.encode(adminDto.getPassword()));
         admin.setEmail(adminDto.getEmail());
         admin.setAge(adminDto.getAge());
         List<String> phones = admin.getPhoneNumbers();
-        if (adminDto.getPhoneNumbers() != null){
-            for (String phone :adminDto.getPhoneNumbers()){
+        if (adminDto.getPhoneNumbers() != null) {
+            for (String phone : adminDto.getPhoneNumbers()) {
                 phones.add(phone);
             }
         }
         return admin;
     }
-    private Admin updateAdminData(Admin admin , AdminDto adminDto) throws Exception {
+
+    private Admin updateAdminData(Admin admin, AdminDto adminDto) throws Exception {
         Class<?> dtoClass = adminDto.getClass();
-        Class<?> entityClass = admin .getClass();
+        Class<?> entityClass = admin.getClass();
 
         for (Field dtoField : dtoClass.getDeclaredFields()) {
             dtoField.setAccessible(true);
@@ -78,21 +101,22 @@ private Validation validation;
             if (value != null) { // Only map non-null values
                 Field entityField = getField(entityClass, dtoField.getName());
                 if (entityField != null &&
-                        !entityField.getName().equals("userId")){
+                        !entityField.getName().equals("userId")) {
                     entityField.setAccessible(true);
-                    entityField.set(admin , value); // Set value in entity
+                    entityField.set(admin, value); // Set value in entity
                 }
             }
         }
         admin.setPassword(SecurityUtils.PASSWORD_ENCODER.encode(admin.getPassword()));
-        return admin ;
+        return admin;
     }
-    private AdminDto populateAdminDto(Admin admin , AdminDto adminDto) throws IllegalAccessException {
-        System.out.println(admin );
-        for (Field entityField : getAllFields(admin .getClass())) {
+
+    private AdminDto populateAdminDto(Admin admin, AdminDto adminDto) throws IllegalAccessException {
+        System.out.println(admin);
+        for (Field entityField : getAllFields(admin.getClass())) {
             System.out.println(entityField.getName());
             entityField.setAccessible(true);
-            Object value = entityField.get(admin );
+            Object value = entityField.get(admin);
             if (value != null) { // Only map non-null values
                 Field dtoField = getField(adminDto.getClass(), entityField.getName());
                 if (dtoField != null) {
@@ -104,8 +128,8 @@ private Validation validation;
         return adminDto;
     }
 
-    public static Field getField(Class<?> clazz, String fieldName) {
-        while(clazz != null) {
+    private static Field getField(Class<?> clazz, String fieldName) {
+        while (clazz != null) {
             try {
                 return clazz.getDeclaredField(fieldName);
             } catch (NoSuchFieldException e) {
@@ -117,25 +141,13 @@ private Validation validation;
 
     private static List<Field> getAllFields(Class<?> clazz) {
         List<Field> fields = new ArrayList<>();
-        while(clazz != null) {
+        while (clazz != null) {
             fields.addAll(Arrays.stream(clazz.getDeclaredFields()).toList());
             clazz = clazz.getSuperclass();
         }
         return fields;
     }
 
-    public AdminDto getAdminById(Long id) throws IllegalAccessException {
-        Admin admin = validation.isAdminExist(id);
-        AdminDto adminDto = new AdminDto();
-        return populateAdminDto(admin,adminDto);
-    }
 
-    public AdminDto deleteAdmin(Long id) throws IllegalAccessException {
-        AdminDto adminDto = new AdminDto();
-        Admin admin = validation.isAdminExist(id);
-        adminDto = populateAdminDto(admin ,adminDto);
-        adminRepo.delete(admin);
-        return adminDto;
-    }
-    }
+}
 

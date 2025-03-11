@@ -31,7 +31,7 @@ public class AdminController {
         return adminService.getAdminById(id);
     }
     @DeleteMapping("/{id}")
-    public AdminDto deleteAdmin(@Valid @PathVariable("id") Long id){
+    public AdminDto deleteAdmin(@Valid @PathVariable("id") Long id) throws IllegalAccessException {
         return adminService.deleteAdmin(id);
     }
 

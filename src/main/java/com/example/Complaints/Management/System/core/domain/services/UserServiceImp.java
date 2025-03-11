@@ -54,14 +54,9 @@ public class UserServiceImp implements UserService {
     @Transactional
     public UserDto updateUser(UserDto userDto) throws Exception {
         // validation to all existed and required fields
-        User user;
-        try{
-            user =  userRepo.findById(userDto.getUserId()).get();
-        }catch (Exception e){
-            throw new ValidationException("User not exist");
-        }
-        user = updateUserData(user,userDto);
-//        System.out.println(user.getUserName());
+        validation.validateGeneralUserUpdateData(userDto);
+        User user = validation.isUserExist(userDto.getUserId());
+        updateUserData(user,userDto);
         User updatedUser = userRepo.saveAndFlush(user);
         return populateUserDto(updatedUser,userDto);
     }
@@ -69,13 +64,15 @@ public class UserServiceImp implements UserService {
     @Transactional
     public UserDto getUserById(Long id) throws IllegalAccessException {
         User user = validation.isUserExist(id);
+        validation.isAllowedUser(id);
         UserDto response = new UserDto();
         return populateUserDto(user,response);
     }
     public UserDto deleteUser(Long id) throws IllegalAccessException {
-        UserDto userDto = new UserDto();
         User user = validation.isUserExist(id);
-        userDto = populateUserDto(user,userDto);
+        validation.isAllowedUser(id);
+        UserDto userDto = new UserDto();
+        populateUserDto(user,userDto);
         userRepo.delete(user);
         return userDto;
     }

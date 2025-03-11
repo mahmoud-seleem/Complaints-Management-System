@@ -52,7 +52,12 @@ public class Validation {
 
 
     public void validateGeneralUserUpdateData(GeneralUserDto dto) throws NoSuchFieldException, IllegalAccessException {
-        isGeneralUserExist(dto.getUserId());
+        GeneralUser generalUser =  isGeneralUserExist(dto.getUserId());
+        if (generalUser.getRole().equals("ADMIN")){
+            isAllowedAdmin(dto.getUserId());
+        }else {
+            isAllowedUser(dto.getUserId());
+        }
         if (dto.getUserName() != null) {
             throw new CustomValidationException(
                     "UserName can't be updated once created,Please remove it !",

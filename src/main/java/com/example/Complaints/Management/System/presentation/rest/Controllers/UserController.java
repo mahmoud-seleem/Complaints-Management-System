@@ -39,7 +39,7 @@ public class UserController {
         return userService.getUserById(id);
     }
     @DeleteMapping("/{id}")
-    public UserDto deleteUser(@Valid @PathVariable("id") Long id){
+    public UserDto deleteUser(@Valid @PathVariable("id") Long id) throws IllegalAccessException {
         return userService.deleteUser(id);
     }
     @PostMapping("/new-complaint")
