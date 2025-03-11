@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 public interface AdminService {
     AdminDto registerAdmin(AdminDto adminDto) throws NoSuchFieldException, IllegalAccessException;
     AdminDto updateAdmin(AdminDto adminDto) throws Exception;
-    AdminDto getAdminById(Long id);
-    AdminDto deleteAdmin(Long id);
+    AdminDto getAdminById(Long id) throws IllegalAccessException;
+    AdminDto deleteAdmin(Long id) throws IllegalAccessException;
     }
 

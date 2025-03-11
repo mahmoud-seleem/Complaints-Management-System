@@ -50,20 +50,6 @@ public class UserServiceImp implements UserService {
         userDto.setUserId(user.getUserId());
         return userDto;
     }
-    private User populateUser(UserDto userDto){
-        User user = new User();
-        user.setUserName(userDto.getUserName());
-        user.setPassword(SecurityUtils.PASSWORD_ENCODER.encode(userDto.getPassword()));
-        user.setEmail(userDto.getEmail());
-        user.setAge(userDto.getAge());
-        List<String> phones = user.getPhoneNumbers();
-        if (userDto.getPhoneNumbers() != null){
-            for (String phone : userDto.getPhoneNumbers()){
-                phones.add(phone);
-            }
-        }
-        return user;
-    }
 
     @Transactional
     public UserDto updateUser(UserDto userDto) throws Exception {
@@ -79,6 +65,38 @@ public class UserServiceImp implements UserService {
         User updatedUser = userRepo.saveAndFlush(user);
         return populateUserDto(updatedUser,userDto);
     }
+
+    @Transactional
+    public UserDto getUserById(Long id) throws IllegalAccessException {
+        User user = validation.isUserExist(id);
+        UserDto response = new UserDto();
+        return populateUserDto(user,response);
+    }
+    public UserDto deleteUser(Long id) throws IllegalAccessException {
+        UserDto userDto = new UserDto();
+        User user = validation.isUserExist(id);
+        userDto = populateUserDto(user,userDto);
+        userRepo.delete(user);
+        return userDto;
+    }
+
+    // helper methods
+
+    private User populateUser(UserDto userDto){
+        User user = new User();
+        user.setUserName(userDto.getUserName());
+        user.setPassword(SecurityUtils.PASSWORD_ENCODER.encode(userDto.getPassword()));
+        user.setEmail(userDto.getEmail());
+        user.setAge(userDto.getAge());
+        List<String> phones = user.getPhoneNumbers();
+        if (userDto.getPhoneNumbers() != null){
+            for (String phone : userDto.getPhoneNumbers()){
+                phones.add(phone);
+            }
+        }
+        return user;
+    }
+
     private User updateUserData(User user,UserDto userDto) throws Exception {
         Class<?> dtoClass = userDto.getClass();
         Class<?> entityClass = user.getClass();
@@ -137,31 +155,6 @@ public class UserServiceImp implements UserService {
         return fields;
     }
 
-    public UserDto getUserById(Long id) {
-        try {
-            UserDto response = new UserDto();
-            return populateUserDto(userRepo.findById(id).get(),response);
-        }catch (NoSuchElementException e){
-            throw new ValidationException("User Doesn't Exist !!");
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public UserDto deleteUser(Long id){
-        UserDto userDto = new UserDto();
-        User user ;
-        try {
-            user = userRepo.findById(id).get();
-            userDto = populateUserDto(user,userDto);
-            userRepo.delete(user);
-//            entityManager.flush();
-        } catch (NoSuchElementException e){
-            throw new ValidationException("User Doesn't Exist !!");
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return userDto;
-    }
 //    public List<UserDto>
     }
 

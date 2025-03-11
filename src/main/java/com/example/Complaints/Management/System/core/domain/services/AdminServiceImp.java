@@ -124,31 +124,18 @@ private Validation validation;
         return fields;
     }
 
-    public AdminDto getAdminById(Long id) {
-        try {
-            AdminDto response = new AdminDto();
-            return populateAdminDto(adminRepo.findById(id).get(),response);
-        }catch (NoSuchElementException e){
-            throw new ValidationException("User Doesn't Exist !!");
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public AdminDto deleteAdmin(Long id){
+    public AdminDto getAdminById(Long id) throws IllegalAccessException {
+        Admin admin = validation.isAdminExist(id);
         AdminDto adminDto = new AdminDto();
-        Admin admin  ;
-        try {
-            admin  = adminRepo.findById(id).get();
-            adminDto = populateAdminDto(admin ,adminDto);
-            adminRepo.delete(admin );
-//            entityManager.flush();
-        } catch (NoSuchElementException e){
-            throw new ValidationException("User Doesn't Exist !!");
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return populateAdminDto(admin,adminDto);
+    }
+
+    public AdminDto deleteAdmin(Long id) throws IllegalAccessException {
+        AdminDto adminDto = new AdminDto();
+        Admin admin = validation.isAdminExist(id);
+        adminDto = populateAdminDto(admin ,adminDto);
+        adminRepo.delete(admin);
         return adminDto;
     }
-//    public List<UserDto>
     }
 

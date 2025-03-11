@@ -27,7 +27,7 @@ public class AdminController {
         return adminService.updateAdmin(adminDto);
     }
     @GetMapping("/{id}")
-    public AdminDto getAdmin(@PathVariable("id") Long id){
+    public AdminDto getAdmin(@PathVariable("id") Long id) throws IllegalAccessException {
         return adminService.getAdminById(id);
     }
     @DeleteMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.example.Complaints.Management.System.services;
 
 import com.example.Complaints.Management.System.core.application.dto.UserDto;
+import com.example.Complaints.Management.System.core.application.services.UserService;
 import com.example.Complaints.Management.System.core.domain.entities.User;
 import com.example.Complaints.Management.System.core.domain.services.UserServiceImp;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.UserRepo;
@@ -93,7 +94,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testGetUserById_HappyPath() {
+    void testGetUserById_HappyPath() throws IllegalAccessException {
         // Given
         when(userRepo.findById(1L)).thenReturn(Optional.of(user));
 
@@ -119,7 +120,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testDeleteUser_HappyPath() {
+    void testDeleteUser_HappyPath() throws IllegalAccessException {
         // Given
         when(userRepo.findById(1L)).thenReturn(Optional.of(user));
 

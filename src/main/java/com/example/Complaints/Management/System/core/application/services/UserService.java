@@ -23,8 +23,8 @@ public interface UserService {
 
     UserDto updateUser(UserDto userDto) throws Exception;
 
-    UserDto getUserById(Long id) throws ValidationException;
+    UserDto getUserById(Long id) throws ValidationException, IllegalAccessException;
 
-    UserDto deleteUser(Long id) throws ValidationException;
+    UserDto deleteUser(Long id) throws ValidationException, IllegalAccessException;
     }
 

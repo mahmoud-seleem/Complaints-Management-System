@@ -35,7 +35,7 @@ public class UserController {
         return userService.updateUser(userDto);
     }
     @GetMapping("/{id}")
-    public UserDto getUser(@PathVariable("id") Long id){
+    public UserDto getUser(@PathVariable("id") Long id) throws IllegalAccessException {
         return userService.getUserById(id);
     }
     @DeleteMapping("/{id}")

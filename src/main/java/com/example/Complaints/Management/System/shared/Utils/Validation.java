@@ -5,9 +5,11 @@ import com.example.Complaints.Management.System.core.application.dto.GeneralUser
 import com.example.Complaints.Management.System.core.domain.entities.Admin;
 import com.example.Complaints.Management.System.core.domain.entities.GeneralUser;
 import com.example.Complaints.Management.System.core.domain.entities.Status;
+import com.example.Complaints.Management.System.core.domain.entities.User;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.AdminRepo;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.GeneralUserRepo;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.StatusRepo;
+import com.example.Complaints.Management.System.core.infrastructure.Repository.UserRepo;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +31,9 @@ public class Validation {
     @Autowired
     private StatusRepo statusRepo;
 
+    @Autowired
+    private UserRepo userRepo;
+
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
 
     public void validateGeneralUserRegistrationData(GeneralUserDto dto) throws NoSuchFieldException, IllegalAccessException {
@@ -43,6 +48,7 @@ public class Validation {
         // validation for the phone numbers
         validatePhoneNumbers(dto.getPhoneNumbers());
     }
+
 
     public void validateGeneralUserUpdateData(GeneralUserDto dto) throws NoSuchFieldException, IllegalAccessException {
         isGeneralUserExist(dto.getUserId());
@@ -175,7 +181,7 @@ public class Validation {
             return generalUserRepo.findById(id).get();
         } catch (Exception e) {
             throw new CustomValidationException(
-                    "User with this id Doesn't Exist !!",
+                    "GeneralUser with this id Doesn't Exist !!",
                     "id",
                     id);
         }
@@ -187,6 +193,17 @@ public class Validation {
         } catch (Exception e) {
             throw new CustomValidationException(
                     "Admin with this id Doesn't Exist !!",
+                    "id",
+                    id);
+        }
+    }
+
+    public User isUserExist(Long id) {
+        try {
+            return userRepo.findById(id).get();
+        } catch (Exception e) {
+            throw new CustomValidationException(
+                    "User with this id Doesn't Exist !!",
                     "id",
                     id);
         }
