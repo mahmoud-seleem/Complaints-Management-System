@@ -52,7 +52,7 @@ class AdminServiceTest {
         admin.setUserId(1L); // Mock userId for the saved Admin
     }
     @Test
-    void testRegisterAdmin_HappyPath() {
+    void testRegisterAdmin_HappyPath() throws NoSuchFieldException, IllegalAccessException {
         // Given: Mock the saveAndFlush method to return a mocked Admin entity
         when(adminRepo.saveAndFlush(any(Admin.class))).thenReturn(admin);
 

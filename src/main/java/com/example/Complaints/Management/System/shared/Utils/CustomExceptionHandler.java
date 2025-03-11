@@ -1,5 +1,6 @@
 package com.example.Complaints.Management.System.shared.Utils;
 
+import com.example.Complaints.Management.System.core.application.dto.ErrorResponseDto;
 import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +25,9 @@ public class CustomExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<String> handleNoResourceFoundException(NoResourceFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not Found");
+    }
+    @ExceptionHandler(CustomValidationException.class)
+    public ResponseEntity<ErrorResponseDto> handleCustomValidationException(CustomValidationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getResponse());
     }
 }

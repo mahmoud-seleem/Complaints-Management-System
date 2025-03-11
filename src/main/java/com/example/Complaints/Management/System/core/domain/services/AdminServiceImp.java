@@ -5,6 +5,7 @@ import com.example.Complaints.Management.System.core.application.services.AdminS
 import com.example.Complaints.Management.System.core.domain.entities.Admin;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.AdminRepo;
 import com.example.Complaints.Management.System.shared.Security.SecurityUtils;
+import com.example.Complaints.Management.System.shared.Utils.Validation;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -31,12 +32,13 @@ public class AdminServiceImp implements AdminService {
     @PersistenceContext
     private EntityManager entityManager;
 
+@Autowired
+private Validation validation;
 
     @Transactional
-    public AdminDto registerAdmin(AdminDto adminDto){
-
+    public AdminDto registerAdmin(AdminDto adminDto) throws NoSuchFieldException, IllegalAccessException {
         // validation logic on the DTO object to be implemented here
-        validateRegistrationData(adminDto);
+        validation.validateGeneralUserRegistrationData(adminDto);
         Admin registeredAdmin = adminRepo.saveAndFlush(populateAdmin(adminDto));
         adminDto.setUserId(registeredAdmin.getUserId());
         return adminDto;
@@ -107,7 +109,7 @@ public class AdminServiceImp implements AdminService {
         return adminDto;
     }
 
-    private static Field getField(Class<?> clazz, String fieldName) {
+    public static Field getField(Class<?> clazz, String fieldName) {
         while(clazz != null) {
             try {
                 return clazz.getDeclaredField(fieldName);

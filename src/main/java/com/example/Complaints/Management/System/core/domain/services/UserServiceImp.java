@@ -5,6 +5,7 @@ import com.example.Complaints.Management.System.core.application.services.UserSe
 import com.example.Complaints.Management.System.core.domain.entities.User;
 import com.example.Complaints.Management.System.core.infrastructure.Repository.UserRepo;
 import com.example.Complaints.Management.System.shared.Security.SecurityUtils;
+import com.example.Complaints.Management.System.shared.Utils.Validation;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -36,10 +37,13 @@ public class UserServiceImp implements UserService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    private Validation validation;
 
     @Transactional
-    public UserDto registerUser(UserDto userDto){
+    public UserDto registerUser(UserDto userDto) throws NoSuchFieldException, IllegalAccessException {
         // validation logic on the DTO object to be implemented here
+        validation.validateGeneralUserRegistrationData(userDto);
         User user = populateUser(userDto);
         user = userRepo.saveAndFlush(user);
         //entityManager.refresh(registeredUser);

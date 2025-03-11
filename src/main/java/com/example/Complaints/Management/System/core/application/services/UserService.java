@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
 
 @Service
 public interface UserService {
-    UserDto registerUser(UserDto userDto) throws ValidationException;
+    UserDto registerUser(UserDto userDto) throws ValidationException, NoSuchFieldException, IllegalAccessException;
 
     UserDto updateUser(UserDto userDto) throws Exception;
 

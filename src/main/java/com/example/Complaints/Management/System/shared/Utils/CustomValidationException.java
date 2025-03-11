@@ -1,19 +1,19 @@
 package com.example.Complaints.Management.System.shared.Utils;
 
 
+import com.example.Complaints.Management.System.core.application.dto.ErrorResponseDto;
+
 public class CustomValidationException extends RuntimeException{
 
-    private String fieldName;
-    private Object value;
-
+    private ErrorResponseDto response;
     public CustomValidationException() {
     }
 
     public CustomValidationException(String message, String fieldName, Object value) {
         super(message);
-        this.fieldName = fieldName;
-        this.value = value;
+        this.response = new ErrorResponseDto(message,fieldName,value);
     }
+
 
     public CustomValidationException(String message) {
         super(message);
@@ -31,19 +31,11 @@ public class CustomValidationException extends RuntimeException{
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public String getFieldName() {
-        return fieldName;
+    public ErrorResponseDto getResponse() {
+        return response;
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
+    public void setResponse(ErrorResponseDto response) {
+        this.response = response;
     }
 }

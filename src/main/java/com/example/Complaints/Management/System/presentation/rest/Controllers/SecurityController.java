@@ -37,7 +37,7 @@ public class SecurityController {
     private HttpSession session; // Inject HttpSession for session management
 
     @PostMapping("/admin/sign-up")
-    public AdminDto registerAdmin(@Valid @RequestBody AdminDto adminDto){
+    public AdminDto registerAdmin(@Valid @RequestBody AdminDto adminDto) throws NoSuchFieldException, IllegalAccessException {
         String password = adminDto.getPassword();
         adminDto = adminService.registerAdmin(adminDto);
         Authentication authentication = authenticationManager.authenticate(

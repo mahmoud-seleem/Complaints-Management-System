@@ -52,7 +52,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testRegisterUser_HappyPath() {
+    void testRegisterUser_HappyPath() throws NoSuchFieldException, IllegalAccessException {
         when(userRepo.saveAndFlush(any(User.class))).thenReturn(user);
         UserDto result = userService.registerUser(userDto);
         assertNotNull(result);
