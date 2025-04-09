@@ -312,7 +312,7 @@ public class CompServiceImp implements CompService {
         }
         complaint.setUser(user);
         try{
-            complaint.setAdmin(adminRepo.findById(1l).get());
+            complaint.setAdmin(adminRepo.findById(1l).get()); // the default Admin
         }catch (Exception e){
             throw new ValidationException("Admin Doesn't Exist !!");
         }
