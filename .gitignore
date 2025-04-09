@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# public and private keys
+
+./src/main/java/resources/keys/**
