@@ -3,6 +3,7 @@ package com.example.Complaints.Management.System.presentation.rest.Controllers;
 import com.example.Complaints.Management.System.core.application.dto.AdminDto;
 import com.example.Complaints.Management.System.core.application.dto.UserDto;
 import com.example.Complaints.Management.System.core.application.services.UserService;
+import com.example.Complaints.Management.System.core.domain.services.EmailServiceImp;
 import com.example.Complaints.Management.System.shared.Security.JWTUtils;
 import com.example.Complaints.Management.System.core.domain.services.AdminServiceImp;
 import jakarta.servlet.http.HttpSession;
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth/")
 public class SecurityController {
+
+    @Autowired
+    private EmailServiceImp emailService;
     @Autowired
     private AdminServiceImp adminService;
 
@@ -63,15 +67,23 @@ public class SecurityController {
     public ResponseEntity<String> login(@PathParam("username") String username, @PathParam("password") String password) {
         try {
             System.out.println(username);
-            System.out.println(password );
+            System.out.println(password);
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = jwtUtils.generateToken(username);
-            return ResponseEntity.ok("JWT-TOKEN = " +token);
+            return ResponseEntity.ok("JWT-TOKEN = " + token);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
+    }
+    @PostMapping("/email")
+    public ResponseEntity<String> sendEmail(){
+        emailService.sendEmail(
+                "mahmoudsaleem522@gmail.com",
+                "Test",
+                "Hi from my server");
+    return ResponseEntity.ok("Success");
     }
 //    @PostMapping("/logout")
 //    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
