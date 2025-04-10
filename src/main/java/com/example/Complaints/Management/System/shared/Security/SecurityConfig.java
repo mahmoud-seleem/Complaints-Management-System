@@ -76,7 +76,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/status/**").hasRole("ADMIN")// Only admins can access
                         .requestMatchers("/api/user/**").hasRole("USER")   // Users can access
-                        .requestMatchers("/api/auth/**").permitAll()       // Public authentication endpoints
+                        .requestMatchers("/api/auth/**").permitAll()// Public authentication endpoints
+                        .requestMatchers("/api/test/**").permitAll()
                         .anyRequest().authenticated())
                         .addFilterBefore(
                                 jwtFilter, UsernamePasswordAuthenticationFilter.class);
