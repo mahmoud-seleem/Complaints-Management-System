@@ -18,6 +18,7 @@ public class EmailServiceImp {
         mailSender.send(message);
     }
     public void sendEmail(String toEmail,String subject, String messageBody) {
+        //  validation of email , subject , body parts
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
         message.setSubject(subject);

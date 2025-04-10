@@ -3,9 +3,14 @@ package com.example.Complaints.Management.System.presentation.rest.Controllers;
 import com.example.Complaints.Management.System.core.application.dto.AdminDto;
 import com.example.Complaints.Management.System.core.application.dto.UserDto;
 import com.example.Complaints.Management.System.core.application.services.UserService;
+import com.example.Complaints.Management.System.core.domain.entities.GeneralUser;
 import com.example.Complaints.Management.System.core.domain.services.EmailServiceImp;
+import com.example.Complaints.Management.System.core.domain.services.OtpServiceImp;
+import com.example.Complaints.Management.System.core.infrastructure.Repository.GeneralUserRepo;
 import com.example.Complaints.Management.System.shared.Security.JWTUtils;
 import com.example.Complaints.Management.System.core.domain.services.AdminServiceImp;
+import com.example.Complaints.Management.System.shared.Utils.CustomValidationException;
+import com.example.Complaints.Management.System.shared.Utils.Validation;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
@@ -28,6 +33,8 @@ public class SecurityController {
     private AdminServiceImp adminService;
 
     @Autowired
+    private OtpServiceImp otpService;
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -36,7 +43,11 @@ public class SecurityController {
     @Autowired
     private JWTUtils jwtUtils;
 
+    @Autowired
+    private GeneralUserRepo generalUserRepo;
 
+    @Autowired
+    private Validation validation;
     @Autowired
     private HttpSession session; // Inject HttpSession for session management
 
@@ -47,8 +58,13 @@ public class SecurityController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(adminDto.getUserName(), password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtUtils.generateToken(adminDto.getUserName());
-        adminDto.setToken(token);
+        String otp = otpService.generateOtp(adminDto.getUserName());
+        emailService.sendOtpEmail(adminDto.getEmail(), otp);
+//            String token = jwtUtils.generateToken(username);
+//            return ResponseEntity.ok("JWT-TOKEN = " + token);
+//        return ResponseEntity.ok("otp sent to the email");
+//        String token = jwtUtils.generateToken(adminDto.getUserName());
+//        adminDto.setToken(token);
         return adminDto;
     }
     @PostMapping("/user/sign-up")
@@ -58,8 +74,10 @@ public class SecurityController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userDto.getUserName(), password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtUtils.generateToken(userDto.getUserName());
-        userDto.setToken(token);
+//        String token = jwtUtils.generateToken(userDto.getUserName());
+//        userDto.setToken(token);
+        String otp = otpService.generateOtp(userDto.getUserName());
+        emailService.sendOtpEmail(userDto.getEmail(), otp);
         return userDto;
         }
 
@@ -71,18 +89,45 @@ public class SecurityController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            String token = jwtUtils.generateToken(username);
-            return ResponseEntity.ok("JWT-TOKEN = " + token);
+            String otp = otpService.generateOtp(username);
+            String email = generalUserRepo.findByUserName(username).getEmail();
+            emailService.sendOtpEmail(email, otp);
+//            String token = jwtUtils.generateToken(username);
+//            return ResponseEntity.ok("JWT-TOKEN = " + token);
+            return ResponseEntity.ok("otp sent to the email");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<String> verifyOtp(
+            @PathParam("username") String username,
+            @PathParam("otp") String otp){
+        // validation for the username
+            GeneralUser user = generalUserRepo.findByUserName(username);
+            if (user == null ){
+                throw new CustomValidationException(
+                        "no user with the provided username ",
+                        "username",
+                        username);
+            }
+        boolean isValid = otpService.validateOtp(username,otp);
+        if (isValid) {
+            otpService.clearOtp(username);
+            String token = jwtUtils.generateToken(username);
+            return ResponseEntity.ok("JWT-TOKEN = " + token);
+        }else {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid OTP");
+        }
+    }
+
     @PostMapping("/email")
-    public ResponseEntity<String> sendEmail(){
-        emailService.sendEmail(
-                "mahmoudsaleem522@gmail.com",
-                "Test",
-                "Hi from my server");
+    public ResponseEntity<String> sendEmail(
+            @PathParam("toEmail") String toEmail,
+            @PathParam("subject") String subject,
+            @PathParam("body") String body){
+        emailService.sendEmail(toEmail,subject,body);
     return ResponseEntity.ok("Success");
     }
 //    @PostMapping("/logout")
