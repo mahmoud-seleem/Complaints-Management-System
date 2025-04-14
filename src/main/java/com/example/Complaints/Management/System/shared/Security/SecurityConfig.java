@@ -89,10 +89,18 @@ public class SecurityConfig {
 //        return http.build();
 //    }
 
+    private static final String[] SWAGGER_WHITELIST = {
+        "/swagger-ui/**",
+        "swagger-ui.html",
+        "/v3/api-docs/**",
+        "/swagger-resources/**",
+        "/swagger-resources" };
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
+
 
 
     @Bean
@@ -136,6 +144,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/**").hasRole("USER")   // Users can access
                         .requestMatchers("/api/auth/**").permitAll()// Public authentication endpoints
                         .requestMatchers("/api/test/**").permitAll()
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .anyRequest().authenticated())
                         .addFilterBefore(
                                 jwtFilter, UsernamePasswordAuthenticationFilter.class);
